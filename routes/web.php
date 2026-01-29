@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\UserTaskController;
 
 // WELCOME ROUTE
 Route::get('/', function () {
@@ -31,8 +33,16 @@ Route::post('/password/email', function () {
     return back()->with('status', 'Password reset link sent!');
 })->name('password.email');
 
+// show peniding tasks to user or completed tasks
+Route::get('/admin/task/status/{id}', [App\Http\Controllers\Admin\TaskController::class, 'updateStatus'])->name('admin.task.updateStatus');
 
-
+// Task routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::get('/admin/task/createtask', [App\Http\Controllers\Admin\TaskController::class, 'create'])->name('admin.task.createtask');
+Route::post('/admin/task/store', [App\Http\Controllers\Admin\TaskController::class, 'store'])->name('admin.task.store');
+Route::get('/admin/task', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('admin.task.index');
+Route::delete('/admin/task/{id}', [App\Http\Controllers\Admin\TaskController::class, 'destroy'])->name('admin.task.destroy');
+});
 // routesn function to dashboard based on role
 Route::get('/redirect', function () {
 
@@ -64,3 +74,22 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 Route::middleware(['auth', 'role:user'])->group(function(){
     Route::get('/user/dashboard',[UserDashboardController::class, 'index'])->name('user.dashboard');
 });
+
+
+// USER TASK ROUTES
+Route::get('/user/task/showtask', [App\Http\Controllers\User\UserTaskController::class, 'showTask'])->name('user.task.showtask');
+Route::get('/user/task/mytask', [App\Http\Controllers\User\UserTaskController::class, 'myTask'])->name('user.task.mytask');
+Route::post('/user/task/store', [App\Http\Controllers\User\UserTaskController::class, 'store'])->name('user.task.store');
+Route::post('/task/update-status/{id}', [App\Http\Controllers\User\UserTaskController::class, 'updateTaskStatus'])->name('task.update.status');
+
+// USER PROFILE UPDATE ROUTE
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/task/profile', [ProfileController::class, 'edit'])->name('task.profile');
+    Route::post('/user/task/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+});
+
+//  users profile route 
+Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'edit'])
+    ->middleware('auth')
+    ->name('profile.edit');

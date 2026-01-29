@@ -9,10 +9,12 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
+    // Show login form
     public function showLoginForm()
     {
         return view('auth.Login');
     }
+    // Handle login request
     public function login(Request $request)
     {
         $request->validate([

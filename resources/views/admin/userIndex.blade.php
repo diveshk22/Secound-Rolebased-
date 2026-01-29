@@ -1,101 +1,162 @@
 @extends('layout.app')
 
 @section('content')
-@if(session('deleted'))
-    <script>
-        alert("{{ session('deleted') }}");
-    </script>
-@endif
-<!-- User Index Page -->
+
+<style>
+    body{ background:#0f172a; }
+
+    .page-title{
+        font-size: 38px;
+        font-weight: 800;
+        color: white;
+        letter-spacing: 1px;
+    }
+
+    .table-wrapper{
+        backdrop-filter: blur(20px);
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    }
+
+    table{ width:100%; border-collapse: collapse; color:#e5e7eb; }
+
+    thead{
+        background: rgba(255,255,255,0.08);
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    thead th{
+        padding:18px 24px;
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(10px);
+    }
+
+    tbody tr{
+        transition: 0.3s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    tbody tr:hover{
+        background: rgba(255,255,255,0.08);
+        transform: scale(1.01);
+    }
+
+    td{ padding:18px 24px; }
+
+    .email{ color:#60a5fa; font-weight:600; }
+
+    .role-btn, .delete-btn{
+        padding:10px 18px;
+        border-radius:10px;
+        font-weight:600;
+        border:none;
+        cursor:pointer;
+        transition:.3s;
+        color:white;
+    }
+
+    .btn-admin{ background:#dc2626; }
+    .btn-admin:hover{ box-shadow:0 0 20px #dc2626; }
+
+    .btn-user{ background:#2563eb; }
+    .btn-user:hover{ box-shadow:0 0 20px #2563eb; }
+
+    .delete-btn{ background:#ef4444; }
+    .delete-btn:hover{ box-shadow:0 0 20px #ef4444; }
+</style>
+
 <div class="p-8">
 
-    <h2 class="text-3xl font-extrabold text-white mb-10 tracking-wide">
-        👥 Users List
-    </h2>
-<!-- User Index Table -->
-    <div class="overflow-x-auto rounded-2xl shadow-2xl
-                backdrop-blur-xl bg-white/10 border border-white/20">
-<!-- User Index Table Body -->
-        <table class="min-w-full text-left text-gray-200">
-            <thead class="bg-white/10 text-gray-300 uppercase text-sm tracking-wider">
+    <h2 class="page-title mb-10">👥 Users List</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
                 <tr>
-                    <th class="py-4 px-6">ID</th>
-                    <th class="py-4 px-6">Name</th>
-                    <th class="py-4 px-6">Email</th>
-                    <th class="py-4 px-6">Role</th>
-                    <th class="py-4 px-6 text-center">Action</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role Action</th>
+                    <th class="text-center">Delete</th>
                 </tr>
             </thead>
-    <!-- User Index Table Body -->
-            <tbody class="divide-y divide-white/10">
+
+            <tbody>
                 @foreach($users as $user)
-                    <tr class="hover:bg-white/10 transition duration-200">
+                <tr>
+                    <td class="font-semibold">{{ $user->id }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td class="email">{{ $user->email }}</td>
 
-                        {{-- ID --}}
-                        <td class="py-4 px-6 font-semibold">
-                            {{ $user->id }}
-                        </td>
+                    <td>
+                        <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
+                            @csrf
+                            <button class="role-btn {{ $user->hasRole('admin') ? 'btn-admin' : 'btn-user' }}">
+                                {{ $user->hasRole('admin') ? 'Admin (Make User)' : 'User (Make Admin)' }}
+                            </button>
+                        </form>
+                    </td>
 
-                        {{-- Name --}}
-                        <td class="py-4 px-6">
-                            {{ $user->name }}
-                        </td>
+                    <td class="text-center">
+                        <form id="delete-form-{{ $user->id }}"
+                              action="{{ route('admin.users.destroy', $user->id) }}"
+                              method="POST">
+                            @csrf
+                            @method('DELETE')
 
-                        {{-- Email --}}
-                        <td class="py-4 px-6 text-blue-300">
-                            {{ $user->email }}
-                        </td>
-        <!-- Action Role Button -->
-                        {{-- Role Button --}}
-                        <td class="py-4 px-6">
-                            <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
-                                @csrf
-                                <button
-                                    class="px-4 py-2 rounded-lg text-white font-semibold transition
-                                    {{ $user->hasRole('admin')
-                                        ? 'bg-red-600 hover:bg-red-700'
-                                        : 'bg-blue-600 hover:bg-blue-700' }}">
-                                    
-                                    @if($user->hasRole('admin'))
-                                        Admin (Make User)
-                                    @else
-                                        User (Make Admin)
-                                    @endif
-                                </button>
-                            </form>
-                        </td>
-                <!--  Delete Role Action -->
-                        {{-- Delete Action --}}
-                        <td class="py-4 px-6 text-center">
-                            <form id="delete-form-{{ $user->id }}"
-                                  action="{{ route('admin.users.destroy', $user->id) }}"
-                                  method="POST">
-                                @csrf
-                                @method('DELETE')
-                <!-- Delete Button -->
-                                <button type="button"
-                                        onclick="confirmDelete({{ $user->id }})"
-                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
-
-                    </tr>
+                            <button type="button"
+                                    onclick="confirmDelete({{ $user->id }})"
+                                    class="delete-btn">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
-        </table>
 
+        </table>
     </div>
-<!-- User Index Page || Delete button js script  -->
 </div>
+
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function confirmDelete(id) {
-        if (confirm('Are you sure you want to delete this user?')) {
-            document.getElementById('delete-form-' + id).submit();
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This user will be permanently deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
     }
 </script>
 
+@if(session('deleted'))
+<script>
+    Swal.fire({
+        title: 'Deleted 🗑️',
+        text: "{{ session('deleted') }}",
+        icon: 'success',
+        confirmButtonColor: '#ef4444',
+        background: '#0f172a',
+        color: '#fff'
+    });
+</script>
+@endif
 
 @endsection

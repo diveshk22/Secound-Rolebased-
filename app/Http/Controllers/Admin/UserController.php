@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     // users destroy admin /users/{user}
-
     public function destroy(User $user)
     {
         $user->delete();

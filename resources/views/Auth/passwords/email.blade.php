@@ -22,7 +22,9 @@
 </head>
 
 <body class="flex items-center justify-center text-white">
-
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Auth Card Container -->
     <div class="auth-card p-10 rounded-2xl shadow-2xl w-full max-w-md">
 
         <h2 class="text-3xl font-extrabold mb-8 text-center tracking-wide">
@@ -34,6 +36,7 @@
                 {{ session('status') }}
             </div>
         @endif
+        <!-- SweetAlert CDN -->
 
         <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
             @csrf

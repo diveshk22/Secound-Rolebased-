@@ -19,9 +19,30 @@
    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
    ➕ <span>Create User</span>
 </a><br>
-<a href="{{ route('admin.users.index') }}"
-   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
-    📋 <span>View Users</span></a>
+<div class="space-y-2">
+
+    <!-- View Users -->
+    <a href="{{ route('admin.users.index') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <span class="text-lg">👥</span>
+        <span class="font-medium">View Users</span>
+    </a><br>
+    
+    <!-- Create Tasks -->
+    <a href="{{ route('admin.task.createtask') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <span class="text-lg">➕</span>
+        <span class="font-medium">Create Tasks</span>
+    </a><br>
+
+    <!-- View Tasks -->
+    <a href="{{ route('admin.task.index') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <span class="text-lg">📋</span><br>
+        <span class="font-medium">View Tasks</span>
+    </a>
+</div>
+<br>
         @endrole
 
 
@@ -31,13 +52,16 @@
                 🏠 <span>User Dashboard</span>
             </a><br>
 
-            <a href="#"
+            <a href="{{ route('user.task.showtask') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                ✅ <span>My Tasks</span>
+            </a><br>
+            <a href="{{ route('task.profile') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
                 🙍 <span>My Profile</span>
             </a><br>
 
-<br>
-        @endrole
+    @endrole
 
     </nav>
 
