@@ -1,9 +1,7 @@
 @extends('layout.app')
 
 @section('title', 'User Tasks')
-
 @section('content')
-
 <style>
     body{
         background: #0f172a;
@@ -139,13 +137,12 @@
             {{ session('error') }}
         </div>
     @endif
-
     <table class="task-table">
         <thead>
             <tr>
                 <th>#</th>
                 <th>Task Title</th>
-                <th>Description</th>
+                <th>Job Description</th>
                 <th>Due Date</th>
                 <th>Status</th>
             </tr>
@@ -158,7 +155,12 @@
 
                     <td>{{ $task->title }}</td>
 
-                    <td>{{ $task->description }}</td>
+                    <td>
+                    <a href="{{ route('task.view.description', $task->id) }}" 
+                     style="background:#6366f1;padding:8px 14px;border-radius:8px;color:white;text-decoration:none;font-size:13px;">
+                     View
+                    </a>
+                </td>
 
                     <td>
                         {{ $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('d M Y') : '-' }}

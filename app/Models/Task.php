@@ -27,7 +27,13 @@ class Task extends Model
         'Reject',
     ];
 
-    // Task belongs to a user
+    // Task belongs to a user (creator)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Task assigned to a user
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');

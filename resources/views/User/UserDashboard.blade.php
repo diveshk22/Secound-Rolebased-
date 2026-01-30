@@ -14,7 +14,7 @@
                     <p class="mt-3 text-lg text-white">
                         Role:
                         <span class="px-4 py-1 rounded-full text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600">
-                            {{ auth()->user()->getRoleNames()->first() }}
+                        {{ auth()->user()->getRoleNames()->first() }}
                         </span>
                     </p>
                 </div>
@@ -42,13 +42,14 @@
         </div>
 
         {{-- Task Summary --}}
+        <!-- die($e); -->
         <div class="max-w-5xl mx-auto mb-12">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white shadow-xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Total Tasks</h3>
-                            <p class="text-4xl font-bold">{{ auth()->user()->tasks()->count() }}</p>
+                            <p class="text-4xl font-bold">{{ $totalTasksCount }}</p>
                         </div>
                         <div class="text-blue-200">
                             <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
@@ -62,7 +63,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Pending Tasks</h3>
-                            <p class="text-4xl font-bold">{{ auth()->user()->tasks()->where('status', 'pending')->count() }}</p>
+                            <p class="text-4xl font-bold">{{ $pendingTasksCount }}</p>
                         </div>
                         <div class="text-orange-200">
                             <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
@@ -72,6 +73,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div>
+            <h4 class="text-white text-center">Rejected Tasks</h4>
+            <p class="text-center text-gray-300">{{ $rejectedTasksCount }}
+            </p>
         </div>
 
 

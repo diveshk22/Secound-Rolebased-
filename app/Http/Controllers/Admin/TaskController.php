@@ -29,10 +29,39 @@ class TaskController extends Controller
     public function index()
     {
         // sirf aaj ka tasks show karna hai
-        $tasks = Task::whereDate('created_at', Carbon::today())->get();
+        $tasks = Task::with(['user', 'assignedUser'])->get();
         return view('admin.task.taskindex', compact('tasks'));
 
     }
+
+    // show task details
+    public function show($id)
+    {
+        $task = Task::findOrFail($id);
+        return view('admin.task.show', compact('task'));
+    }
+
+    // edit task
+    public function edit($id)
+    {
+        $task = Task::findOrFail($id);
+        return view('admin.task.edit', compact('task'));
+    }
+
+    // update task
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'description' => 'required|string',
+        ]);
+
+        $task = Task::findOrFail($id);
+        $task->description = $request->description;
+        $task->save();
+
+        return redirect()->route('admin.task.index')->with('success', 'Task updated successfully!');
+    }
+
 
     // delete task
     public function destroy($id)

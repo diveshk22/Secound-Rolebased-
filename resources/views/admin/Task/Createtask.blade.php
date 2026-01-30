@@ -2,94 +2,130 @@
 
 @section('content')
 
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
 <style>
     body{
-        background: #0f172a;
+        background: radial-gradient(circle at top, #0b1220, #0f172a 60%);
+        font-family: 'Inter', sans-serif;
     }
 
     .task-card{
-        max-width: 700px;
-        margin: 60px auto;
-        padding: 40px;
-        border-radius: 18px;
-        background: rgba(255,255,255,0.06);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        color: white;
+        max-width: 760px;
+        margin: 70px auto;
+        padding: 45px;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(35px);
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+        color: #fff;
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn{
+        from{opacity:0; transform: translateY(20px);}
+        to{opacity:1; transform: translateY(0);}
     }
 
     .task-card h2{
         text-align: center;
-        margin-bottom: 30px;
-        font-size: 28px;
-        font-weight: 700;
+        margin-bottom: 35px;
+        font-size: 30px;
+        font-weight: 800;
         letter-spacing: 1px;
+        background: linear-gradient(90deg,#38bdf8,#6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .form-group{
-        margin-bottom: 22px;
+        margin-bottom: 24px;
         display: flex;
         flex-direction: column;
     }
 
     .form-group label{
-        margin-bottom: 8px;
-        font-size: 14px;
-        color: #cbd5e1;
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: #94a3b8;
+        letter-spacing: 0.5px;
     }
 
-    .form-group input{
-        padding: 12px 14px;
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: rgba(255,255,255,0.05);
-        color: white;
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: #fff;
         font-size: 14px;
         outline: none;
-        transition: 0.3s ease;
+        transition: all 0.25s ease;
     }
 
-    .form-group select{
-        padding: 12px 14px;
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: rgba(255,255,255,0.05);
-        color: white;
-        font-size: 14px;
-        outline: none;
-        transition: 0.3s ease;
-        width: 100%;
+    .form-group textarea{
+        resize: none;
+        min-height: 150px;
     }
 
     .form-group select option{
-        background: #1e293b;
+        background: #0f172a;
         color: white;
     }
 
-    .form-group input:focus, .form-group select:focus{
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus{
         border-color: #38bdf8;
-        box-shadow: 0 0 0 3px rgba(56,189,248,0.3);
-        background: rgba(255,255,255,0.08);
+        box-shadow: 0 0 0 4px rgba(56,189,248,0.25);
+        background: rgba(255,255,255,0.07);
     }
 
     .submit-btn{
         width: 100%;
-        padding: 14px;
+        padding: 15px;
         border: none;
-        border-radius: 10px;
+        border-radius: 14px;
         background: linear-gradient(135deg, #38bdf8, #6366f1);
         color: white;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
-        transition: 0.3s ease;
-        margin-top: 10px;
+        transition: all 0.3s ease;
+        margin-top: 15px;
     }
 
     .submit-btn:hover{
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(56,189,248,0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px rgba(56,189,248,0.45);
+    }
+
+    .error-box{
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.4);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 25px;
+        color: #fca5a5;
+        font-size: 14px;
+    }
+
+    /* CKEditor Dark Fix */
+    .ck-editor__editable{
+        background: rgba(255,255,255,0.05) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
+        min-height: 200px;
+    }
+
+    .ck.ck-toolbar{
+        background: rgba(255,255,255,0.06) !important;
+        border-radius: 12px 12px 0 0 !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
     }
 </style>
 
@@ -97,8 +133,8 @@
     <h2>Create New Task</h2>
 
     @if ($errors->any())
-        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px; color: #fca5a5;">
-            <ul style="margin: 0; padding-left: 20px;">
+        <div class="error-box">
+            <ul style="margin:0; padding-left:18px;">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -108,28 +144,30 @@
 
     <form action="{{ route('admin.task.store') }}" method="POST">
         @csrf
+
         <div class="form-group">
             <label>Task Name</label>
-            <input type="text" name="title" placeholder="Enter Task Name" required />
+            <input type="text" name="title" placeholder="Enter Task Name" required>
         </div>
 
         <div class="form-group">
             <label>Task Description</label>
-            <input type="text" name="description" placeholder="Enter Task Description" />
+            <textarea id="description" name="description"></textarea>
         </div>
 
         <div class="form-group">
             <label>Due Date</label>
-            <input type="date" name="due_date" />
+            <input type="date" name="due_date">
         </div>
-
 
         <div class="form-group">
             <label>Assign To</label>
             <select name="assigned_to" required>
                 <option value="">Select User</option>
                 @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                    <option value="{{ $user->id }}">
+                        {{ $user->name }} ({{ $user->email }})
+                    </option>
                 @endforeach
             </select>
         </div>
@@ -138,6 +176,7 @@
     </form>
 </div>
 
+<!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if(session('success'))
@@ -146,7 +185,6 @@
         title: 'Success 🎉',
         text: '{{ session('success') }}',
         icon: 'success',
-        confirmButtonText: 'OK',
         background: '#0f172a',
         color: '#fff',
         confirmButtonColor: '#3b82f6'
@@ -160,13 +198,20 @@
         title: 'Error ❌',
         text: '{{ session('error') }}',
         icon: 'error',
-        confirmButtonText: 'OK',
         background: '#0f172a',
         color: '#fff',
         confirmButtonColor: '#ef4444'
     });
 </script>
 @endif
-
-
 @endsection
+
+@push('scripts')
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+@endpush

@@ -36,6 +36,19 @@ Route::post('/password/email', function () {
 // show peniding tasks to user or completed tasks
 Route::get('/admin/task/status/{id}', [App\Http\Controllers\Admin\TaskController::class, 'updateStatus'])->name('admin.task.updateStatus');
 
+// view routes for task details
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::get('/admin/task/createtask', [App\Http\Controllers\Admin\TaskController::class, 'create'])->name('admin.task.createtask');
+    Route::post('/admin/task/store', [App\Http\Controllers\Admin\TaskController::class, 'store'])->name('admin.task.store');
+    Route::get('/admin/task', [App\Http\Controllers\Admin\TaskController::class, 'index'])->name('admin.task.index');
+
+    Route::get('/admin/task/{id}', [App\Http\Controllers\Admin\TaskController::class, 'show'])->name('admin.task.show');
+    Route::get('/admin/task/{id}/edit', [App\Http\Controllers\Admin\TaskController::class, 'edit'])->name('admin.task.edit');
+    Route::put('/admin/task/{id}', [App\Http\Controllers\Admin\TaskController::class, 'update'])->name('admin.task.update');
+    Route::delete('/admin/task/{id}', [App\Http\Controllers\Admin\TaskController::class, 'destroy'])->name('admin.task.destroy');
+});
+
 // Task routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/admin/task/createtask', [App\Http\Controllers\Admin\TaskController::class, 'create'])->name('admin.task.createtask');
@@ -81,6 +94,11 @@ Route::get('/user/task/showtask', [App\Http\Controllers\User\UserTaskController:
 Route::get('/user/task/mytask', [App\Http\Controllers\User\UserTaskController::class, 'myTask'])->name('user.task.mytask');
 Route::post('/user/task/store', [App\Http\Controllers\User\UserTaskController::class, 'store'])->name('user.task.store');
 Route::post('/task/update-status/{id}', [App\Http\Controllers\User\UserTaskController::class, 'updateTaskStatus'])->name('task.update.status');
+
+
+// user task description route
+Route::get('task/description/{id}', [UserTaskController::class, 'viewDescription'])
+    ->name('task.view.description');
 
 // USER PROFILE UPDATE ROUTE
 Route::middleware(['auth'])->group(function () {
