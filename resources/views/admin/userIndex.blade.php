@@ -95,6 +95,13 @@
                     <td class="email">{{ $user->email }}</td>
 
                     <td>
+                        @role('admin')
+                        <form action="/user/{{ $user->id }}/make-manager" method="POST">
+                            @csrf
+                            <button type="submit">Make Manager</button>
+                        </form>
+                        @endrole
+
                         <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
                             @csrf
                             <button class="role-btn {{ $user->hasRole('admin') ? 'btn-admin' : 'btn-user' }}">

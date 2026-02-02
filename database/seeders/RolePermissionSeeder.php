@@ -22,10 +22,12 @@ class RolePermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'delete tasks']);
         
         // Create roles
+        $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $userRole = Role::firstOrCreate(['name' => 'user']);
         
         // Assign permissions to roles
+        $superadminRole->syncPermissions(Permission::all());
         $adminRole->syncPermissions(Permission::all());
         $userRole->syncPermissions(['view tasks', 'create tasks']);
     }

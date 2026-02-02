@@ -16,8 +16,14 @@ class UserController extends Controller
         $user->delete();
         return back()->with('success', 'User deleted successfully');
     }
+    // admin role manager 
+    public function makeManager($id)
+    {
+        $user = User::findOrFail($id);
+        $user->syncRoles('manager');
 
-
+        return back()->with('success', 'User is now a Manager');
+    }
     // role defines user index admin /users
     
     public function changeRole(User $user)

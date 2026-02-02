@@ -10,6 +10,21 @@
     {{-- Menu --}}
     <nav class="flex-1 p-4 space-y-2 text-sm">
 
+        @role('superadmin')
+            <a href="{{ route('superadmin.superdashboard') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                🔧 <span>Super Admin Dashboard</span>
+            </a><br>
+            <a href="{{ route('super.users') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                👥 <span>Manage Users</span>
+            </a><br>
+            <a href="{{ route('super.tasks.view') }}" class="btn btn-warning">
+            📋 <span>View All Tasks</span>
+            </a>
+            <br>
+        @endrole
+
         @role('admin')
             <a href="{{ route('admin.dashboard') }}"
                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">

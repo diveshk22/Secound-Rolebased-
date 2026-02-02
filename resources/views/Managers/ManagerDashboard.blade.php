@@ -1,0 +1,4 @@
+@extends('layout.app')
+@section('content')
+<h1>Manager Dashboard</h1>
+@endsection

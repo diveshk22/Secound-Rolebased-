@@ -17,14 +17,28 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolePermissionSeeder::class);
         
-        // User::factory(10)->create();
-
-        $user = User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User']
+        // Create superadmin user
+        $superadmin = User::firstOrCreate(
+            ['email' => 'superadmin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => bcrypt('password')
+            ]
         );
         
-        // Assign user role to test user
+        if (!$superadmin->hasRole('superadmin')) {
+            $superadmin->assignRole('superadmin');
+        }
+        
+        // Create regular test user
+        $user = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password')
+            ]
+        );
+        
         if (!$user->hasRole('user')) {
             $user->assignRole('user');
         }

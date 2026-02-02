@@ -10,7 +10,6 @@ use Carbon\Carbon;
 
 class TaskController extends Controller
 {
-
     // status update function
     public function updateStatus(Request $request, $id)
     {
@@ -21,53 +20,43 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $task->status = $request->status;
         $task->save();
-        
         return redirect()->back()->with('success', 'Task status updated successfully.');
     }
-
     // show all tasks
     public function index()
     {
         // sirf aaj ka tasks show karna hai
         $tasks = Task::with(['user', 'assignedUser'])->get();
         return view('admin.task.taskindex', compact('tasks'));
-
     }
 
-    // show task details
-    public function show($id)
-    {
-        $task = Task::findOrFail($id);
-        return view('admin.task.show', compact('task'));
-    }
-
-    // edit task
+    // edit task form
     public function edit($id)
     {
         $task = Task::findOrFail($id);
-        return view('admin.task.edit', compact('task'));
+        $users = User::all();
+        return view('admin.task.edit-task', compact('task', 'users'));
     }
-
-    // update task
-    public function update(Request $request, $id)
+    // update tasks
+    public function update (Request $request, $id)
     {
-        $request->validate([
-            'description' => 'required|string',
-        ]);
-
         $task = Task::findOrFail($id);
+        $task->title = $request->title;
         $task->description = $request->description;
+        $task->due_date = $request->due_date;
+        $task->assigned_to = $request->assigned_to;
+
         $task->save();
-
-        return redirect()->route('admin.task.index')->with('success', 'Task updated successfully!');
+        return redirect()->route('admin.task.index')->with('success', 'Task updated successfully.');
     }
-
 
     // delete task
     public function destroy($id)
     {
-    Task::findOrFail($id)->delete();
-    return redirect()->back()->with('success', 'Task deleted successfully!');
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return redirect()->back()->with('success', 'Task Deleted Successfully');
     }
 
     // create task form 
@@ -100,5 +89,4 @@ class TaskController extends Controller
             return redirect()->back()->with('error', 'Failed to create task: ' . $e->getMessage());
         }
     }
-
 }

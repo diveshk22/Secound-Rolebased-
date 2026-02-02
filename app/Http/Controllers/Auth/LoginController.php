@@ -47,6 +47,15 @@ class LoginController extends Controller
     
     private function redirectBasedOnRole($user)
     {
+        // Refresh user roles from database to get the latest role
+        $user->refresh();
+        $user->load('roles');
+        
+        // Check if user has superadmin role
+        if($user->hasRole('superadmin')){
+            return redirect()->route('superadmin.superdashboard');
+        }
+        
         // Check if user has admin role
         if($user->hasRole('admin')){
             return redirect()->route('admin.dashboard');
@@ -56,18 +65,21 @@ class LoginController extends Controller
         if($user->hasRole('user')){
             return redirect()->route('user.dashboard');
         }
-        
-        // If no specific role, check if user has any roles at all
-        $roles = $user->getRoleNames();
-        if($roles->contains('admin')){
-            return redirect()->route('admin.dashboard');
+
+        if(auth()->user()->hasRole('admin')){
+            return redirect('/admin/dashboard');
+
         }
-        if($roles->contains('user')){
-            return redirect()->route('user.dashboard');
+        elseif (auth()->user()->hasRole('user')){
+            return redirect('/manager/dashboard');
+        }
+        else{
+            return redirect('/user/dashboard');
         }
         
-        // Default fallback - redirect to user dashboard for any authenticated user
-        return redirect()->route('user.dashboard');
+        // If no role found, logout and redirect to login
+        Auth::logout();
+        return redirect()->route('login')->with('error', 'No valid role assigned. Please contact administrator.');
     }
 
     public function logout(Request $request)

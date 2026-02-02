@@ -73,7 +73,7 @@
 </style>
 
 <div class="desc-wrapper">
-    <div class="desc-title">Task Description</div>
+<div class="desc-title">Task Description</div>
 
     <div class="desc-content">
         {!! $task->description !!}
