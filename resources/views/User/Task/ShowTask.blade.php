@@ -145,6 +145,7 @@
                 <th>Job Description</th>
                 <th>Due Date</th>
                 <th>Status</th>
+                <th>Comments</th>
             </tr>
         </thead>
 
@@ -178,10 +179,40 @@
                             </select>
                         </form>
                     </td>
-                </tr>
+                    <td style="min-width:280px; text-align:left;">
+                        {{-- Existing Comments --}}
+                        <div style="max-height:150px; overflow-y:auto; margin-bottom:10px;">
+                            @foreach($task->comments as $comment)
+                                <div style="background:rgba(255,255,255,0.06); padding:6px; border-radius:6px; margin-bottom:6px;">
+                                    <div style="font-size:11px; color:#94a3b8;">
+                                        {{ $comment->user->name }} • {{ $comment->created_at->diffForHumans() }}
+                                    </div>
+                                    <div style="font-size:13px;">
+                                        {{ $comment->comment }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>  
+
+                        {{-- Add Comment Form --}}
+                        <form action="{{ route('task.comment') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="task_id" value="{{ $task->id }}">
+
+                            <textarea name="comment" required
+                                style="width:100%; padding:6px; border-radius:6px; background:#0f172a; color:white; font-size:12px;"
+                                placeholder="Write comment..."></textarea>
+
+                            <button type="submit"
+                                style="margin-top:5px; background:#3b82f6; padding:5px 10px; border:none; border-radius:5px; color:white; font-size:12px;">
+                                Add
+                            </button>
+                        </form>
+                    </td>
+
             @empty
                 <tr>
-                    <td colspan="5">No tasks assigned yet.</td>
+                    <td colspan="6">No tasks assigned yet.</td>
                 </tr>
             @endforelse
         </tbody>

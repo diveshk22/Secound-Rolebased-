@@ -3,13 +3,14 @@
 @section('content')
 
 <style>
-    body{ background:#0f172a; }
+    body{ background:#0f172a; font-family: system-ui, -apple-system, sans-serif; }
 
     .page-title{
         font-size: 38px;
         font-weight: 800;
         color: white;
         letter-spacing: 1px;
+        margin-bottom: 30px;
     }
 
     .table-wrapper{
@@ -21,7 +22,11 @@
         box-shadow: 0 25px 60px rgba(0,0,0,0.6);
     }
 
-    table{ width:100%; border-collapse: collapse; color:#e5e7eb; }
+    table{
+        width:100%;
+        border-collapse: collapse;
+        color:#e5e7eb;
+    }
 
     thead{
         background: rgba(255,255,255,0.08);
@@ -32,9 +37,7 @@
 
     thead th{
         padding:18px 24px;
-        position: sticky;
-        top: 0;
-        backdrop-filter: blur(10px);
+        text-align: left;
     }
 
     tbody tr{
@@ -47,11 +50,23 @@
         transform: scale(1.01);
     }
 
-    td{ padding:18px 24px; }
+    td{
+        padding:18px 24px;
+        vertical-align: middle;
+    }
 
-    .email{ color:#60a5fa; font-weight:600; }
+    .email{
+        color:#60a5fa;
+        font-weight:600;
+    }
 
-    .role-btn, .delete-btn{
+    .actions{
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn{
         padding:10px 18px;
         border-radius:10px;
         font-weight:600;
@@ -59,21 +74,45 @@
         cursor:pointer;
         transition:.3s;
         color:white;
+        text-decoration: none;
     }
 
-    .btn-admin{ background:#dc2626; }
-    .btn-admin:hover{ box-shadow:0 0 20px #dc2626; }
+    .btn-manager{
+        background:#10b981;
+    }
+    .btn-manager:hover{
+        box-shadow:0 0 15px #10b981;
+    }
 
-    .btn-user{ background:#2563eb; }
-    .btn-user:hover{ box-shadow:0 0 20px #2563eb; }
+    .btn-admin{
+        background:#dc2626;
+    }
+    .btn-admin:hover{
+        box-shadow:0 0 15px #dc2626;
+    }
 
-    .delete-btn{ background:#ef4444; }
-    .delete-btn:hover{ box-shadow:0 0 20px #ef4444; }
+    .btn-user{
+        background:#2563eb;
+    }
+    .btn-user:hover{
+        box-shadow:0 0 15px #2563eb;
+    }
+
+    .delete-btn{
+        background:#ef4444;
+    }
+    .delete-btn:hover{
+        box-shadow:0 0 15px #ef4444;
+    }
+
+    .text-center{
+        text-align:center;
+    }
 </style>
 
 <div class="p-8">
 
-    <h2 class="page-title mb-10">👥 Users List</h2>
+    <h2 class="page-title">👥 Users List</h2>
 
     <div class="table-wrapper">
         <table>
@@ -82,7 +121,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role Action</th>
+                    <th>Role Actions</th>
                     <th class="text-center">Delete</th>
                 </tr>
             </thead>
@@ -95,19 +134,25 @@
                     <td class="email">{{ $user->email }}</td>
 
                     <td>
-                        @role('admin')
-                        <form action="/user/{{ $user->id }}/make-manager" method="POST">
-                            @csrf
-                            <button type="submit">Make Manager</button>
-                        </form>
-                        @endrole
+                        <div class="actions">
 
-                        <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
-                            @csrf
-                            <button class="role-btn {{ $user->hasRole('admin') ? 'btn-admin' : 'btn-user' }}">
-                                {{ $user->hasRole('admin') ? 'Admin (Make User)' : 'User (Make Admin)' }}
-                            </button>
-                        </form>
+                            @role('admin')
+                            <form action="{{ url('/user/' . $user->id . '/make-manager') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-manager">
+                                    Make Manager
+                                </button>
+                            </form>
+                            @endrole
+
+                            <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn {{ $user->hasRole('admin') ? 'btn-admin' : 'btn-user' }}">
+                                    {{ $user->hasRole('admin') ? 'Admin → Make User' : 'User → Make Admin' }}
+                                </button>
+                            </form>
+
+                        </div>
                     </td>
 
                     <td class="text-center">
@@ -119,7 +164,7 @@
 
                             <button type="button"
                                     onclick="confirmDelete({{ $user->id }})"
-                                    class="delete-btn">
+                                    class="btn delete-btn">
                                 Delete
                             </button>
                         </form>
@@ -136,33 +181,35 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    function confirmDelete(id) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "This user will be permanently deleted!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + id).submit();
-            }
-        });
-    }
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This user will be permanently deleted!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!',
+        background: '#0f172a',
+        color: '#fff'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-form-' + id).submit();
+        }
+    });
+}
 </script>
 
 @if(session('deleted'))
 <script>
-    Swal.fire({
-        title: 'Deleted 🗑️',
-        text: "{{ session('deleted') }}",
-        icon: 'success',
-        confirmButtonColor: '#ef4444',
-        background: '#0f172a',
-        color: '#fff'
-    });
+Swal.fire({
+    title: 'Deleted 🗑️',
+    text: "{{ session('deleted') }}",
+    icon: 'success',
+    confirmButtonColor: '#ef4444',
+    background: '#0f172a',
+    color: '#fff'
+});
 </script>
 @endif
 

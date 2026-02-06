@@ -6,63 +6,98 @@
     body{
         margin:0;
         font-family: 'Inter', sans-serif;
-        background: linear-gradient(-45deg, #0f172a, #1e293b, #0ea5e9, #1e3a8a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        background: #0f172a;
+        color:#fff;
+        overflow-x:hidden;
     }
 
-    @keyframes gradientBG{
-        0%{background-position:0% 50%;}
-        50%{background-position:100% 50%;}
-        100%{background-position:0% 50%;}
+    /* Animated soft gradient layer */
+    body::before{
+        content:"";
+        position:fixed;
+        top:-50%;
+        left:-50%;
+        width:200%;
+        height:200%;
+        background: radial-gradient(circle at center, #0ea5e9 0%, transparent 40%),
+                    radial-gradient(circle at 70% 30%, #1e3a8a 0%, transparent 40%),
+                    radial-gradient(circle at 30% 70%, #1e293b 0%, transparent 40%);
+        animation: moveBg 25s linear infinite;
+        z-index:-1;
+        opacity:.35;
+    }
+
+    @keyframes moveBg{
+        0%{transform:rotate(0deg);}
+        100%{transform:rotate(360deg);}
     }
 
     .glass{
         background: rgba(255,255,255,0.06);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     }
 
-    .fade-in{
-        opacity:0;
-        transform: translateY(30px);
-        transition: all 0.8s ease;
+    .header-card{
+        transition:.4s;
     }
-
-    .fade-in.show{
-        opacity:1;
-        transform: translateY(0);
+    .header-card:hover{
+        transform: translateY(-6px);
     }
 
     .stat-card{
-        transition: 0.4s ease;
+        transition:.4s;
     }
-
     .stat-card:hover{
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+        transform: translateY(-10px) scale(1.03);
+        box-shadow:0 25px 70px rgba(0,0,0,0.7);
     }
 
-    .clock{
-        font-size:14px;
-        opacity:0.7;
+    .avatar{
+        width:72px;
+        height:72px;
+        border-radius:50%;
+        border:2px solid rgba(255,255,255,0.3);
+        transition:.4s;
+        object-fit:cover;
+    }
+    .avatar:hover{
+        transform:scale(1.1);
+        border-color:#fff;
+    }
+
+    .title-big{
+        font-size:50px;
+        font-weight:800;
+        letter-spacing:1px;
+    }
+
+    .glow{
+        position: fixed;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: radial-gradient(circle, rgba(14,165,233,0.25), transparent 60%);
+        transform: translate(-50%, -50%);
+        z-index: 0;
     }
 </style>
 
-<div class="min-h-screen py-10 px-6 text-white">
+<div class="glow" id="glow"></div>
+
+<div class="min-h-screen py-14 px-6 relative z-10">
 
     {{-- Header --}}
-    <div class="max-w-7xl mx-auto mb-10 fade-in" id="headerCard">
-        <div class="glass rounded-2xl p-8 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto mb-14">
+        <div class="glass header-card rounded-3xl p-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
                 <h2 class="text-3xl font-bold">
                     Welcome, {{ auth()->user()->name }} 👋
                 </h2>
 
-                <div class="clock mt-2" id="liveClock"></div>
-
-                <p class="mt-3 text-lg">
+                <p class="mt-4 text-lg">
                     Role:
                     <span class="px-4 py-1 rounded-full text-sm bg-gradient-to-r from-blue-600 to-indigo-600">
                         {{ auth()->user()->getRoleNames()->first() }}
@@ -71,17 +106,17 @@
             </div>
 
             <a href="{{ route('profile.edit') }}">
-                <img src="{{ auth()->user()->photo ? asset('profile_photos/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=4f46e5&color=fff&size=50' }}"
-                    class="rounded-full border-2 border-white/20 hover:border-white/40 transition object-cover"
-                    style="width:70px;height:70px;">
+                <img
+                    src="{{ auth()->user()->photo ? asset('profile_photos/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=4f46e5&color=fff&size=70' }}"
+                    class="avatar">
             </a>
         </div>
     </div>
 
     {{-- Intro --}}
-    <div class="max-w-5xl mx-auto mb-12 fade-in" id="introCard">
-        <div class="glass rounded-3xl p-12 text-center">
-            <h1 class="text-5xl font-extrabold mb-4">Dashboard</h1>
+    <div class="max-w-5xl mx-auto mb-16">
+        <div class="glass rounded-3xl p-14 text-center">
+            <h1 class="title-big mb-4">Dashboard</h1>
             <p class="text-gray-300 text-lg">
                 Everything you need is right here. Fast, clean and beautiful interface.
             </p>
@@ -89,22 +124,22 @@
     </div>
 
     {{-- Stats --}}
-    <div class="max-w-5xl mx-auto mb-12 fade-in" id="statsCard">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
-            <div class="stat-card glass rounded-2xl p-8 text-center">
-                <h3 class="text-lg mb-2">Total Tasks</h3>
-                <p class="text-4xl font-bold text-blue-400">{{ $totalTasksCount }}</p>
+            <div class="stat-card glass rounded-3xl p-12 text-center">
+                <h3 class="text-lg mb-3 text-gray-300">Total Tasks</h3>
+                <p class="text-5xl font-bold text-blue-400">{{ $totalTasksCount }}</p>
             </div>
 
-            <div class="stat-card glass rounded-2xl p-8 text-center">
-                <h3 class="text-lg mb-2">Pending Tasks</h3>
-                <p class="text-4xl font-bold text-orange-400">{{ $pendingTasksCount }}</p>
+            <div class="stat-card glass rounded-3xl p-12 text-center">
+                <h3 class="text-lg mb-3 text-gray-300">Pending Tasks</h3>
+                <p class="text-5xl font-bold text-orange-400">{{ $pendingTasksCount }}</p>
             </div>
 
-            <div class="stat-card glass rounded-2xl p-8 text-center">
-                <h3 class="text-lg mb-2">Rejected Tasks</h3>
-                <p class="text-4xl font-bold text-red-400">{{ $rejectedTasksCount }}</p>
+            <div class="stat-card glass rounded-3xl p-12 text-center">
+                <h3 class="text-lg mb-3 text-gray-300">Rejected Tasks</h3>
+                <p class="text-5xl font-bold text-red-400">{{ $rejectedTasksCount }}</p>
             </div>
 
         </div>
@@ -113,20 +148,12 @@
 </div>
 
 <script>
-    // Fade in animation
-    window.addEventListener('load', ()=>{
-        document.querySelectorAll('.fade-in').forEach((el, i)=>{
-            setTimeout(()=> el.classList.add('show'), i * 200);
-        });
+    // Premium mouse glow effect
+    const glow = document.getElementById('glow');
+    document.addEventListener('mousemove', (e) => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
     });
-
-    // Live clock
-    function updateClock(){
-        const now = new Date();
-        document.getElementById('liveClock').innerText = now.toLocaleString();
-    }
-    setInterval(updateClock,1000);
-    updateClock();
 </script>
 
 @endsection

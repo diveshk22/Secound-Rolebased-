@@ -10,14 +10,14 @@ class UserTaskController extends Controller
     // views to task description page button click
     public function viewDescription($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::with('comments.user')->findOrFail($id);
         return view('user.task.description', compact('task'));
     }
 
     // show tasks assigned to user
     public function showTask()
     {
-        $tasks = Task::where('assigned_to', Auth::id())->get();
+        $tasks = Task::where('assigned_to', Auth::id())->with('comments.user')->get();
         return view('User.Task.ShowTask', compact('tasks'));
     }
 

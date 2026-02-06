@@ -16,8 +16,7 @@ class TaskController extends Controller
         $request->validate([
             'status' => 'required|in:' . implode(',', Task::STATUSES) . ',pending,completed'
         ]);
-        
-        $task = Task::findOrFail($id);
+        $task = Task::with('comments.user')->findOrFail($id);
         $task->status = $request->status;
         $task->save();
         return redirect()->back()->with('success', 'Task status updated successfully.');
@@ -26,7 +25,16 @@ class TaskController extends Controller
     public function index()
     {
         // sirf aaj ka tasks show karna hai
-        $tasks = Task::with(['user', 'assignedUser'])->get();
+        $user = auth()->user();
+
+        if($user->hasRole('admin')){
+            //Admin ko sab task dikhen (admin + manager)
+            $tasks = Task::with(['user', 'assignedUser', 'comments.user'])->latest()->get();
+        } else {
+            // Manager ko sirf apne bnaaye hue tasks dikhen
+            $tasks = Task::with(['user', 'assignUser', 'comments.user'])
+            ->where('user_id', $user->id)->latest()->get();
+        }
         return view('admin.task.taskindex', compact('tasks'));
     }
 
@@ -45,7 +53,6 @@ class TaskController extends Controller
         $task->description = $request->description;
         $task->due_date = $request->due_date;
         $task->assigned_to = $request->assigned_to;
-
         $task->save();
         return redirect()->route('admin.task.index')->with('success', 'Task updated successfully.');
     }

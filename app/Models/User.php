@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+Use App\Models\Project;
+Use App\Models\Task;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -22,8 +27,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'created_by',
         'photo',
     ];
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

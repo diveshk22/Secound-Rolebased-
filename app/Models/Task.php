@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    protected $table = 'tasks';
     // Mass assignable attributes
     protected $fillable = [
         'title',
@@ -36,6 +37,17 @@ class Task extends Model
     // Task assigned to a user
     public function assignedUser()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'assigned_to'); //column name check kar
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Task has many comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'task_id');
     }
 }

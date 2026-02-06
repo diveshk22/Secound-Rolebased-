@@ -19,10 +19,6 @@
                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
                 👥 <span>Manage Users</span>
             </a><br>
-            <a href="{{ route('super.tasks.view') }}" class="btn btn-warning">
-            📋 <span>View All Tasks</span>
-            </a>
-            <br>
         @endrole
 
         @role('admin')
@@ -34,6 +30,11 @@
    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800">
    ➕ <span>Create User</span>
 </a><br>
+<a href="{{ route('projects.create') }}"
+   class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+   📝 <span>Create Project</span>
+</a><br>
+
 <div class="space-y-2">
 
     <!-- View Users -->
@@ -57,9 +58,44 @@
         <span class="font-medium">View Tasks</span>
     </a>
 </div>
-<br>
         @endrole
+@role('manager')
 
+    <a href="{{ route('managers.managerdashboard') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        📊 <span>Manager Dashboard</span>
+    </a><br>
+
+    <a href="{{ route('managers.createuser') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        ➕ <span>Create User</span>
+    </a><br>
+
+    <a href="{{ route('projects.create') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        📝 <span>Create Project</span>
+    </a><br>
+
+
+    <a href="{{ route('managers.assigntask') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        📝 <span>Assign Task</span>
+    </a><br>
+
+    <a href="{{ route('managers.allusers') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        👥 <span>View Users</span>
+    </a><br>
+
+    <a href="{{ route('managers.viewassigntask') }}"
+       class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        ✅ <span>View Assigned Tasks</span>
+    </a><br>
+            <a href="{{ route('projects.index') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                📁 <span>My Projects</span>
+            </a>
+@endrole
 
         @role('user')
             <a href="{{ route('user.dashboard') }}"
@@ -75,6 +111,11 @@
                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
                 🙍 <span>My Profile</span>
             </a><br>
+            <a href="{{ route('projects.index') }}"
+               class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+                📁 <span>My Projects</span>
+            </a><br>
+
 
     @endrole
 
