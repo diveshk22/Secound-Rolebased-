@@ -105,38 +105,36 @@
     }
 </style>
 
-@if($projects->count() > 0)
+    @if($projects->count() > 0)
     <div class="projects-container">
-        @foreach($projects as $project)
-            <div class="project-card">
-                <div class="project-title">{{ $project->name }}</div>
-
-                <div class="project-desc">
-                    {{ $project->description }}
-                </div>
-
-                <div class="creator">
-                    <strong>Created By:</strong>
-                    <span>{{ $project->creator->name }}</span>
-                    ({{ $project->creator->getRoleNames()->first() }})
-                </div>
-
-                <div class="users-title">Users in this project</div>
-                <ul class="users-list">
-                    @role('manager|admin')
-                        @foreach($project->users as $user)
-                            <li>{{ $user->name }}</li>
-                        @endforeach
-                    @elserole('user')
-                        <li>{{ auth()->user()->name }}</li>
-                    @endrole
-                </ul>
-            </div>
-        @endforeach
+    @foreach($projects as $project)
+    <div class="project-card">
+    <div class="project-title">{{ $project->name }}</div>            
+    <div class="project-desc">
+    {{ $project->description }}
     </div>
-@else
+    <div class="creator">
+    <strong>Created By:</strong>
+    <span>{{ $project->creator->name }}</span>
+    ({{ $project->creator->getRoleNames()->first() }})
+    </div>
+
+    <div class="users-title">Users in this project</div>
+    <ul class="users-list">
+    @role('manager|admin')
+    @foreach($project->users as $user)
+    <li>{{ $user->name }}</li>
+    @endforeach
+    @elserole('user')
+    <li>{{ auth()->user()->name }}</li>
+    @endrole
+    </ul>
+    </div>
+    @endforeach
+    </div>
+    @else
     <div class="no-project">
-        No projects available.
+    No projects available.
     </div>
 @endif
 

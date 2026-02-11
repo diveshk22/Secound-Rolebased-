@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    @vite(['resources/css/app.css','resources/js/app.js'])
-
+    {{--- @vite(['resources/css/app.css','resources/js/app.js']) --}}
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         *{
             box-sizing: border-box;

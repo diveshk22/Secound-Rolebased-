@@ -11,9 +11,14 @@ class RoleMiddleware
     // Handle an incoming request.
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (!auth()->check() || !auth()->user()->hasRole($role)) {
-            abort(403, 'Unauthorized');
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
+        
+        if (!auth()->user()->hasRole($role)) {
+            abort(403, 'Access Denied');
+        }
+        
         return $next($request);
     }
 }

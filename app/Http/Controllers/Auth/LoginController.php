@@ -47,34 +47,24 @@ class LoginController extends Controller
     
     private function redirectBasedOnRole($user)
     {
-        // Refresh user roles from database to get the latest role
-        $user->refresh();
-        $user->load('roles');
+        // Refresh user and load roles
+        $user = $user->fresh(['roles']);
         
-        // Check if user has superadmin role
+        // Check roles in priority order
         if($user->hasRole('superadmin')){
             return redirect()->route('superadmin.superdashboard');
         }
         
-        // Check if user has admin role
         if($user->hasRole('admin')){
             return redirect()->route('admin.dashboard');
         }
         
-        // Check if user has user role
+        if($user->hasRole('manager')){
+            return redirect()->route('managers.managerdashboard');
+        }
+        
         if($user->hasRole('user')){
             return redirect()->route('user.dashboard');
-        }
-
-        if(auth()->user()->hasRole('admin')){
-            return redirect('/admin/dashboard');
-
-        }
-        elseif (auth()->user()->hasRole('user')){
-            return redirect('/manager/dashboard');
-        }
-        else{
-            return redirect('/user/dashboard');
         }
         
         // If no role found, logout and redirect to login

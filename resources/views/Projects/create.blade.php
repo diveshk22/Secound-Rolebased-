@@ -6,13 +6,13 @@
     body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
-        background-color: #2f3542; /* Dark background */
+        background-color: #2f3542;
     }
 
     .container {
         max-width: 750px;
         margin: 50px auto;
-        background: #3d4452; /* Dark card */
+        background: #3d4452;
         padding: 35px 40px;
         border-radius: 10px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -67,20 +67,22 @@
         resize: vertical;
     }
 
-    /* Scrollable user list */
+    /* User list styling */
     select[multiple] {
-        height: 120px;
-        overflow-y: scroll;
+        height: 150px;
+        overflow-y: auto;
+        cursor: pointer;
     }
 
-    /* Custom scrollbar */
-    select[multiple]::-webkit-scrollbar {
-        width: 8px;
+    select[multiple] option {
+        padding: 8px;
+        margin-bottom: 3px;
+        border-radius: 4px;
     }
 
-    select[multiple]::-webkit-scrollbar-thumb {
-        background: #1e90ff;
-        border-radius: 10px;
+    select[multiple] option:checked {
+        background-color: #1e90ff;
+        color: white;
     }
 
     .btn-submit {
@@ -100,33 +102,47 @@
     }
 </style>
 
-<div class="container">
-    <h1>Create Project</h1>
+        <div class="container">
+        <h1>Create Project</h1>
 
-    <form action="{{ route('projects.store') }}" method="POST">
+        <form action="{{ route('projects.store') }}" method="POST">
         @csrf
 
         <div class="form-group">
-            <label for="name">Project Name</label>
-            <input type="text" id="name" name="name" placeholder="Enter project name" required>
+        <label for="name">Project Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter project name" required>
         </div>
 
         <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" placeholder="Enter project description" required></textarea>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Enter project description" required></textarea>
         </div>
-
         <div class="form-group">
-            <label for="assigned_users">Assign Users</label>
-            <select id="assigned_users" name="assigned_users[]" multiple required>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-            </select>
+        <label for="assigned_users">Assign Users</label>
+        <select id="assigned_users" name="assigned_users[]" multiple required>
+        @foreach($users as $user)
+        <option value="{{ $user->id }}">{{ $user->name }}</option>
+        @endforeach
+        </select>
         </div>
 
         <button type="submit" class="btn-submit">Create Project</button>
-    </form>
-</div>
+        </form>
+        </div>
 
-@endsection
+        <script>
+        // Toggle select without Ctrl key
+        document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('assigned_users');
+        select.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+
+        const option = e.target;
+        if (option.tagName === 'OPTION') {
+        option.selected = !option.selected;
+        }
+        });
+        });
+        </script>
+
+        @endsection

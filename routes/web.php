@@ -42,6 +42,8 @@ Route::post('/password/email', function () {
 // Projects Routes
 Route::resource('projects', App\Http\Controllers\ProjectController::class);
 
+// Delete Projects Routes
+// Route::delete('/projects/{id}', [App\Http\Controllers\ProjectController::class, 'destroy'])->name('projects.destroy')->middleware('isAdmin');
 
 // Super-Admin all routes 
 Route::middleware(['auth', 'redirect.role:superadmin'])->group(function () {
@@ -126,16 +128,17 @@ Route::get('/managers/Task/assigntask', [AssignTaskController::class, 'AssignTas
 Route::post('/managers/Task/Assign', [AssignTaskController::class, 'Store'])
     ->name('managers.task.assigntask');
 
+Route::post('/managers/Task/store', [AssignTaskController::class, 'Store'])
+    ->name('managers.task.store');
+
 Route::get('/managers/Task/viewassigntask', [AssignTaskController::class, 'viewAssignedTasks'])
     ->name('managers.viewassigntask');
 
 Route::post('/managers/Task/viewassigntask', [AssignTaskController::class, 'handleTaskAction'])
     ->name('managers.viewassigntask.post');
-Route::get('/managers/Task/comment', [AssignTaskController::class, 'storeComment'])
-    ->name('managers.task.comment');
 
 Route::post('/managers/Task/comment', [AssignTaskController::class, 'storeComment'])
-    ->name('managers.task.comment.post');
+    ->name('managers.task.comment');
 
 // user task description route
 Route::get('task/description/{id}', [UserTaskController::class, 'viewDescription'])

@@ -43,12 +43,42 @@ class UserController extends Controller
         return view('admin.createuser');
     }
 
-    // List only users
+    // user index with role-based visibility
     public function index()
     {
-        $users = User::role('user')->with('creator')->get();
+        $authUser = auth()->user();
+
+        if ($authUser->hasRole('superadmin')) {
+            // SuperAdmin sees only admins and managers
+            $users = User::with('creator')
+                ->whereHas('roles', function ($q) {
+                    $q->whereIn('name', ['admin', 'manager']);
+                })
+                ->get();
+        }
+
+        elseif ($authUser->hasRole('admin')) {
+            // Admin sees only users
+            $users = User::with('creator')
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', 'user');
+                })
+                ->get();
+        }
+
+        elseif ($authUser->hasRole('manager')) {
+            // Manager sees only users created by him
+            $users = User::with('creator')
+                ->whereHas('roles', function ($q) {
+                    $q->where('name', 'user');
+                })
+                ->where('created_by', $authUser->id)
+                ->get();
+        }
+
         return view('admin.userindex', compact('users'));
     }
+
 
     // ⭐ STORE USER (MOST IMPORTANT CHANGE)
     public function store(Request $request)

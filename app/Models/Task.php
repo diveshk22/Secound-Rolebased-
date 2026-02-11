@@ -19,6 +19,7 @@ class Task extends Model
 
     // Task statuses
     public const STATUSES  = [
+        'Select',
         'backlog',
         'ToDo',
         'In Progress',

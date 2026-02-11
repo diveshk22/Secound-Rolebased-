@@ -12,12 +12,18 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Auth::user()->projects()->with('users' , 'creator')->get();
-        return view('projects.index', compact('projects'));
+    $managerIds = User::role('manager')->pluck('id');
+
+    $projects = Project::whereIn('created_by', $managerIds)
+                ->with('creator', 'users')
+                ->latest()
+                ->get();
+
+    return view('projects.index', compact('projects'));
     }
     public function create()
     {
-        $users =User::role('user')->get();
+        $users =User::role(['user', 'manager'])->get();
         return view('projects.create', compact('users'));
     }
 
@@ -37,5 +43,12 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
+    
+    // public function destroy($id)
+    // {
+    //     $project = Project::findOrFail($id);
+    //     $project->delete();
 
+    //     return redirect()->back()->with('success', 'Project deleted successfully.');
+    // }
 }

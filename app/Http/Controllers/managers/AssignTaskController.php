@@ -13,7 +13,7 @@ class AssignTaskController extends Controller
     public function AssignTask()
     {
         $employees = User::role('user')->get();
-        return view('managers.task.AssignTask', compact('employees'));
+        return view('managers.task.ViewAssignTask', compact('employees'));
     }
 
     public function StoreComment(Request $request)
@@ -36,8 +36,6 @@ class AssignTaskController extends Controller
         'due_date' => 'nullable|date',
         ]);
 
-        // comment section controller
-        $task =  Task::with('comment.user')->findOrFail($id);
         // Create a new task
         $task = new Task();
         $task->title = 'Task by Manager'; // ya koi default title

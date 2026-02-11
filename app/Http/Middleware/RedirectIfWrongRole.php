@@ -15,6 +15,12 @@ class RedirectIfWrongRole
         }
 
         $user = auth()->user();
+        $user->load('roles');
+
+        // If Super Admin tries to access other role routes, redirect to Super Admin dashboard
+        if ($user->hasRole('superadmin') && $role !== 'superadmin') {
+            return redirect()->route('superadmin.superdashboard');
+        }
 
         // If user doesn't have the required role, redirect to their appropriate dashboard
         if (!$user->hasRole($role)) {
