@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,28 +20,55 @@ class DatabaseSeeder extends Seeder
         
         // Create superadmin user
         $superadmin = User::firstOrCreate(
-            ['email' => 'superadmin@example.com'],
+            ['email' => 'superadmin@gmail.com'],
             [
                 'name' => 'Super Admin',
-                'password' => bcrypt('password')
+                'password' => Hash::make('password')
             ]
         );
         
         if (!$superadmin->hasRole('superadmin')) {
             $superadmin->assignRole('superadmin');
         }
+
+        // Admin 
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@email.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password')
+            ]
+        );
         
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
+
+        // Managers
+        $manager = User::firstOrCreate(
+            ['email' => 'manager@gmail.com'],
+            [
+                'name' => 'Manager',
+                'password' => Hash::make('password')
+            ]
+        );
+
+        if (!$manager->hasRole('manager')) {
+            $manager->assignRole('manager');
+        }
+
         // Create regular test user
         $user = User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
-                'password' => bcrypt('password')
+                'password' => Hash::make('password')
             ]
         );
         
         if (!$user->hasRole('user')) {
             $user->assignRole('user');
         }
+
     }
 }

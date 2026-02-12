@@ -41,25 +41,25 @@
     }
 </style>
 
-<div class="view-card">
+   <div class="view-card">
     <h2>✏️ Edit Task Description</h2>
     
     <form action="{{ route('admin.task.update', $task->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+    @csrf
+    @method('PUT')
         
-        <div class="form-group">
-            <textarea name="description" placeholder="Enter task description...">{{ $task->description }}</textarea>
-        </div>
+    <div class="form-group">
+    <textarea name="description" placeholder="Enter task description...">{{ $task->description }}</textarea>
+    </div>
 
-        <button type="submit" class="btn" style="background:#10b981; color:white;">
-            Update Description
-        </button>
+    <button type="submit" class="btn" style="background:#10b981; color:white;">
+    Update Description
+    </button>
         
-        <a href="{{ route('admin.task.index') }}" class="btn" style="background:#6b7280; color:white;">
-            Cancel
-        </a>
+    <a href="{{ route('admin.task.index') }}" class="btn" style="background:#6b7280; color:white;">
+    Cancel
+    </a>
     </form>
-</div>
+    </div>
 
-@endsection
+    @endsection

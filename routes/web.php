@@ -6,10 +6,7 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\Admin\TaskController;
-use App\Http\Controllers\User\UserTaskController;
-use App\Http\Controllers\Managers\ManagerController;
-use App\Http\Controllers\Managers\AssignTaskController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\superadmin\SuperAdminController;
 Use App\Http\Controllers\Managers\CreateUController;
 Use App\Http\Controllers\Managers\ManagerDashboardController;
@@ -39,11 +36,7 @@ Route::post('/password/email', function () {
     return back()->with('status', 'Password reset link sent!');
 })->name('password.email');
 
-// Projects Routes
-Route::resource('projects', App\Http\Controllers\ProjectController::class);
 
-// Delete Projects Routes
-// Route::delete('/projects/{id}', [App\Http\Controllers\ProjectController::class, 'destroy'])->name('projects.destroy')->middleware('isAdmin');
 
 // Super-Admin all routes 
 Route::middleware(['auth', 'redirect.role:superadmin'])->group(function () {
@@ -65,7 +58,11 @@ Route::get('/admin/task/{id}/edit', [TaskController::class, 'edit'])->name('admi
 Route::put('/admin/task/{id}', [TaskController::class, 'update'])->name('admin.task.update');
 Route::delete('/admin/task/{id}', [TaskController::class, 'destroy'])->name('admin.task.destroy');
 Route::delete('/admin/task/{id}', [TaskController::class, 'destroy'])->name('admin.task.delete');
+
+
 });
+
+
 
 // routes function to dashboard based on role
 Route::get('/redirect', function () {
@@ -102,16 +99,30 @@ Route::get('/admin/dashboard',[AdminDashboardController::class, 'index'])->name(
 Route::post('/user/{id}/make-manager', [UserController::class, 'makeManager'])
     ->middleware('role:admin');
 
+
+// Projects Admin Routes
+Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+    Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    // Project Tasks Routes
+    Route::get('/projects/{project_id}/tasks', [TaskController::class, 'taskIndex'])->name('projects.task.taskindex');
+    Route::get('/projects/{project_id}/tasks/create', [TaskController::class, 'taskCreate'])->name('projects.task.create');
+
+});
+
+
 //USER DASHBOARD
 Route::middleware(['auth', 'redirect.role:user'])->group(function(){
 Route::get('/user/dashboard',[UserDashboardController::class, 'index'])->name('user.dashboard');
 });
 
-// USER TASK ROUTES
-Route::get('/user/task/showtask', [App\Http\Controllers\User\UserTaskController::class, 'showTask'])->name('user.task.showtask');
-Route::get('/user/task/mytask', [App\Http\Controllers\User\UserTaskController::class, 'myTask'])->name('user.task.mytask');
-Route::post('/user/task/store', [App\Http\Controllers\User\UserTaskController::class, 'store'])->name('user.task.store');
-Route::post('/task/update-status/{id}', [App\Http\Controllers\User\UserTaskController::class, 'updateTaskStatus'])->name('task.update.status');
+
 
 // managers routes
 Route::middleware(['role:manager'])->group(function () {
@@ -121,28 +132,8 @@ Route::get('/managers/allusers', [App\Http\Controllers\Managers\CreateUControlle
 Route::post('/managers/storeuser', [App\Http\Controllers\Managers\CreateUController::class, 'store'])->name('managers.storeUser');
 });
 
-//managers TAsk Assigen routes
-Route::get('/managers/Task/assigntask', [AssignTaskController::class, 'AssignTask'])
-    ->name('managers.assigntask');
 
-Route::post('/managers/Task/Assign', [AssignTaskController::class, 'Store'])
-    ->name('managers.task.assigntask');
 
-Route::post('/managers/Task/store', [AssignTaskController::class, 'Store'])
-    ->name('managers.task.store');
-
-Route::get('/managers/Task/viewassigntask', [AssignTaskController::class, 'viewAssignedTasks'])
-    ->name('managers.viewassigntask');
-
-Route::post('/managers/Task/viewassigntask', [AssignTaskController::class, 'handleTaskAction'])
-    ->name('managers.viewassigntask.post');
-
-Route::post('/managers/Task/comment', [AssignTaskController::class, 'storeComment'])
-    ->name('managers.task.comment');
-
-// user task description route
-Route::get('task/description/{id}', [UserTaskController::class, 'viewDescription'])
-    ->name('task.view.description');
 
 // USER PROFILE UPDATE ROUTE
 Route::middleware(['auth'])->group(function () {
@@ -150,9 +141,7 @@ Route::get('/user/task/profile', [ProfileController::class, 'edit'])->name('task
 Route::post('/user/task/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// Comment store route
-Route::post('/task/comment', [CommentController::class, 'store'])
-    ->name('task.comment'); 
+ 
 
 //  users profile route 
 Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'edit'])

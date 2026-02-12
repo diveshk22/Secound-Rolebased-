@@ -129,6 +129,10 @@
     }
 </style>
 
+    <div>
+    <a href="{{route ('admin.projects.index')}}">Back</a>
+    </div>
+
 <div class="task-card">
     <h2>Create New Task</h2>
 
@@ -141,41 +145,40 @@
             </ul>
         </div>
     @endif
+<form action="{{ route('admin.task.store') }}" method="POST">
+    @csrf
 
-    <form action="{{ route('admin.task.store') }}" method="POST">
-        @csrf
+    <input type="hidden" name="project_id" value="{{ $project_id }}">
 
-        <div class="form-group">
-            <label>Task Name</label>
-            <input type="text" name="title" placeholder="Enter Task Name" required>
-        </div>
+    <div class="form-group">
+        <label>Task Name</label>
+        <input type="text" name="title" placeholder="Enter Task Name" required>
+    </div>
 
-        <div class="form-group">
-            <label>Task Description</label>
-            <textarea id="description" name="description"></textarea>
-        </div>
+    <div class="form-group">
+        <label>Task Description</label>
+        <textarea id="description" name="description"></textarea>
+    </div>
 
-        <div class="form-group">
-            <label>Due Date</label>
-            <input type="date" name="due_date">
-        </div>
+    <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" name="due_date">
+    </div>
 
-        <div class="form-group">
-            <label>Assign To</label>
-            <select name="assigned_to" required>
-                <option value="">Select User</option>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">
-                        {{ $user->name }} ({{ $user->email }})
-                    </option>
-                @endforeach
-            </select>
-        </div>
+    <div class="form-group">
+        <label>Assign To</label>
+        <select name="assigned_to" required>
+            <option value="">Select User</option>
+            @foreach($users as $user)
+                <option value="{{ $user->id }}">
+                    {{ $user->name }} ({{ $user->email }})
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-        <button type="submit" class="submit-btn">Create Task</button>
-    </form>
-</div>
-
+    <button type="submit" class="submit-btn">Create Task</button>
+</form>
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

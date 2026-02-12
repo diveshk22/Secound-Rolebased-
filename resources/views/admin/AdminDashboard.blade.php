@@ -1,5 +1,4 @@
 @extends('layout.app')
-
 @section('content')
 
 <style>
@@ -95,74 +94,74 @@
         letter-spacing: 1px;
         margin-bottom: 50px;
     }
-</style>
+    </style>
 
-<div class="animated-bg"></div>
+    <div class="animated-bg"></div>
 
-<!-- Welcome Section -->
-<div class="welcome-card p-2 rounded-2xl mb-10 flex justify-between items-center text-white">
+    <!-- Welcome Section -->
+    <div class="welcome-card p-2 rounded-2xl mb-10 flex justify-between items-center text-white">
     <div>
-        <h2 class="text-3xl font-bold">
-            Welcome, {{ auth()->user()->name }} 👋
-        </h2>
+    <h2 class="text-3xl font-bold">
+    Welcome, {{ auth()->user()->name }} 👋
+    </h2>
 
-        <p class="mt-3 text-lg">
-            Role:
-            <span class="px-4 py-1 rounded-full text-sm role-badge">
-                {{ auth()->user()->getRoleNames()->first() }}
-            </span>
-        </p>
+    <p class="mt-3 text-lg">
+    Role:
+    <span class="px-4 py-1 rounded-full text-sm role-badge">
+    {{ auth()->user()->getRoleNames()->first() }}
+    </span>
+    </p>
     </div>
-</div>
+    </div>
 
-<!-- Dashboard Content -->
-<div class="px-6 pb-2">
+    <!-- Dashboard Content -->
+    <div class="px-6 pb-2">
 
     <h1 class="dashboard-title">
-        🚀 Admin Dashboard Overview
+    🚀 Admin Dashboard Overview
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
 
-        {{-- Total Users --}}
-        <div class="dashboard-card card-blue">
-            <h2 class="text-l uppercase tracking-wider text-gray-100">
-                Total Users
-            </h2>
-            <p class="stat-number text-blue-400">
-                {{ $totalUsers }}
-            </p>
-        </div>
+    {{-- Total Users --}}
+    <div class="dashboard-card card-blue">
+    <h2 class="text-l uppercase tracking-wider text-gray-100">
+    Total Users
+    </h2>
+    <p class="stat-number text-blue-400">
+    {{ $totalUsers }}
+    </p>
+    </div>
 
-        {{-- Today Users --}}
-        <div class="dashboard-card card-green">
-            <h2 class="text-l uppercase tracking-wider text-gray-300">
-                Users Created Today
-            </h2>
-            <p class="stat-number text-green-400">
-                {{ $todayUsers }}
-            </p>
-        </div>
-        <div style="display:flex;gap:20px;margin:30px;">
+    {{-- Today Users --}}
+    <div class="dashboard-card card-green">
+    <h2 class="text-l uppercase tracking-wider text-gray-300">
+    Users Created Today
+    </h2>
+    <p class="stat-number text-green-400">
+    {{ $todayUsers }}
+    </p>
+    </div>
+    <div style="display:flex;gap:20px;margin:30px;">
 
     <div style="flex:1;background:#1e293b;padding:25px;border-radius:10px;color:white;text-align:center;">
-        <h3>Total Tasks</h3>
-        <h1>{{ $totalTasks }}</h1>
+    <h3>Total Tasks</h3>
+    <h1>{{ $totalTasks }}</h1>
     </div>
 
     <div style="flex:1;background:#0ea5e9;padding:25px;border-radius:10px;color:white;text-align:center;">
-        <h3>Today's Tasks</h3>
-        <h1>{{ $todayTasks }}</h1>
+    <h3>Today's Tasks</h3>
+    <h1>{{ $todayTasks }}</h1>
     </div>
 
     <div style="flex:1;background:#22c55e;padding:25px;border-radius:10px;color:white;text-align:center;">
-        <h3>Pending Tasks</h3>
-        <h1>{{ $pendingTasks }}</h1>
+    <h3>Pending Tasks</h3>
+    <h1>{{ $pendingTasks }}</h1>
     </div>
-</div>
-
     </div>
 
-</div>
+    </div>
 
-@endsection
+    </div>
+
+    @endsection

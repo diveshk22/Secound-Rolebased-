@@ -82,7 +82,9 @@
     }
 
 </style>
-
+        <div>
+    <a href="{{route ('admin.task.index')}}">Back</a>
+    </div>
 <div class="view-card">
     <h2>Edit Task</h2>
 

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\admin;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Project;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -67,11 +68,11 @@ class TaskController extends Controller
     }
 
     // create task form 
-    public function create()
-    {
-        $users = User::role('user')->get();
-        return view('admin.task.createtask', compact('users'));
-    }
+        // public function create()
+        // {
+        //     $users = User::role('user')->get();
+        //     return view('admin.task.createtask', compact('users'));
+        // }
 
     // store task
     public function store(Request $request)
@@ -89,11 +90,29 @@ class TaskController extends Controller
                 'due_date' => $request->due_date,
                 'assigned_to' => $request->assigned_to,
                 'user_id' => auth()->id(),
+                'project_id' => $request->project_id,
             ]);
             
             return redirect()->back()->with('success', 'Task created successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create task: ' . $e->getMessage());
         }
+    }
+
+    // show tasks for a specific project
+    public function taskIndex($project_id)
+    {
+        $tasks = Task::where('project_id', $project_id)->with(['user', 'assignedUser', 'comments.user'])->latest()->get();
+        return view('admin.Projects.Task.TaskIndex', compact('tasks', 'project_id'));
+    }
+
+    // create task form for a specific project
+    public function taskCreate($project_id)
+    {
+        $project = Project::findOrFail($project_id);
+
+        $users = $project->users; // Get users associated with the project
+        
+        return view('admin.Projects.Task.Createtask', compact('users', 'project_id'));
     }
 }

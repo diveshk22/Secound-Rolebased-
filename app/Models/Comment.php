@@ -6,15 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $fillable = ['task_id', 'user_id', 'comment'];
-
-    public function task()
-    {
-        return $this->belongsTo(Task::class , 'task_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class , 'user_id');
-    }
+    // Comment functionality removed (was only used for tasks)
 }

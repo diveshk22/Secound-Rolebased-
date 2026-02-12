@@ -15,6 +15,7 @@ class Task extends Model
         'assigned_to',
         'status',
         'user_id',
+        'project_id',
     ];
 
     // Task statuses
@@ -29,16 +30,16 @@ class Task extends Model
         'Reject',
     ];
 
-    // Task belongs to a user (creator)
+    // Task belongs to a user (creator) - Admin/SuperAdmin only
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Task assigned to a user
+    // Task assigned to a user - Admin/SuperAdmin only
     public function assignedUser()
     {
-        return $this->belongsTo(User::class, 'assigned_to'); //column name check kar
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function createdBy()
@@ -46,7 +47,7 @@ class Task extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Task has many comments
+    // Task has many comments - Admin/SuperAdmin only
     public function comments()
     {
         return $this->hasMany(Comment::class, 'task_id');

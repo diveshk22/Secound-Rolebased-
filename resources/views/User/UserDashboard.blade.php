@@ -46,14 +46,6 @@
         transform: translateY(-6px);
     }
 
-    .stat-card{
-        transition:.4s;
-    }
-    .stat-card:hover{
-        transform: translateY(-10px) scale(1.03);
-        box-shadow:0 25px 70px rgba(0,0,0,0.7);
-    }
-
     .avatar{
         width:72px;
         height:72px;
@@ -118,30 +110,8 @@
         <div class="glass rounded-3xl p-14 text-center">
             <h1 class="title-big mb-4">Dashboard</h1>
             <p class="text-gray-300 text-lg">
-                Everything you need is right here. Fast, clean and beautiful interface.
+                Task and project functionality has been removed for users.
             </p>
-        </div>
-    </div>
-
-    {{-- Stats --}}
-    <div class="max-w-5xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-            <div class="stat-card glass rounded-3xl p-12 text-center">
-                <h3 class="text-lg mb-3 text-gray-300">Total Tasks</h3>
-                <p class="text-5xl font-bold text-blue-400">{{ $totalTasksCount }}</p>
-            </div>
-
-            <div class="stat-card glass rounded-3xl p-12 text-center">
-                <h3 class="text-lg mb-3 text-gray-300">Pending Tasks</h3>
-                <p class="text-5xl font-bold text-orange-400">{{ $pendingTasksCount }}</p>
-            </div>
-
-            <div class="stat-card glass rounded-3xl p-12 text-center">
-                <h3 class="text-lg mb-3 text-gray-300">Rejected Tasks</h3>
-                <p class="text-5xl font-bold text-red-400">{{ $rejectedTasksCount }}</p>
-            </div>
-
         </div>
     </div>
 

@@ -2,7 +2,7 @@
 
 @section('content')
 
-<style>
+    <style>
     body{
         background: linear-gradient(135deg,#0f172a,#1e293b);
         font-family: 'Segoe UI', sans-serif;
@@ -80,39 +80,39 @@
         color:#334155;
         font-weight:600;
     }
-</style>
+    </style>
 
-<div class="users-wrapper">
+    <div class="users-wrapper">
     <div class="users-title">All Users List</div>
 
     <table class="users-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>User Name</th>
-                <th>Email</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($users as $index => $user)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>
-                        <span class="badge-date">
-                            {{ $user->created_at->format('d M Y, h:i A') }}
-                        </span>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="no-users">No users found</td>
-                </tr>
-            @endforelse
-        </tbody>
+    <thead>
+    <tr>
+    <th>#</th>
+    <th>User Name</th>
+    <th>Email</th>
+    <th>Created At</th>
+    </tr>
+    </thead>
+    <tbody>
+    @forelse($users as $index => $user)
+    <tr>
+    <td>{{ $index + 1 }}</td>
+    <td>{{ $user->name }}</td>
+    <td>{{ $user->email }}</td>
+    <td>
+    <span class="badge-date">
+    {{ $user->created_at->format('d M Y, h:i A') }}
+    </span>
+    </td>
+    </tr>
+    @empty
+    <tr>
+    <td colspan="4" class="no-users">No users found</td>
+    </tr>
+    @endforelse
+    </tbody>
     </table>
-</div>
+    </div>
 
-@endsection
+    @endsection

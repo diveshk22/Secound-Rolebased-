@@ -156,8 +156,8 @@
 
         setTimeout(() => {
             popup.style.display = 'none';
-        }, 3000);
-    @endif
+}, 3000);
+@endif
 </script>
 
 @endsection
