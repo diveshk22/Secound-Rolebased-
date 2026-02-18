@@ -21,7 +21,6 @@
     👥 <span>Manage Users</span>
     </a>
     @endrole
-
      @role('admin')
     <a href="{{ route('admin.dashboard') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
@@ -33,15 +32,15 @@
     </a>
     <!------------------------------------------- Create Projects --------------------------------------------------------------->
 
-    <a href="{{ route('admin.projects.create') }}"
+    <a href="{{ route('projects.create') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg text-s
-late-300 hover:bg-slate-800 hover:text-white transition">
+    late-300 hover:bg-slate-800 hover:text-white transition">
     <span class="text-lg">➕</span>
     <span class="font-medium">Create Project</span>
     </a>
     
     <!-- View All Project -->
-    <a href="{{ route('admin.projects.index') }}"
+    <a href="{{ route('projects.index') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
     <span class="text-lg">📁</span>
     <span class="font-medium">View Projects</span>
@@ -58,19 +57,29 @@ late-300 hover:bg-slate-800 hover:text-white transition">
     <!-- Managers Roles -->
     @role('manager')
 
-    <a href="{{ route('managers.managerdashboard') }}"
+    <a href="{{ route('manager.dashboard') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     📊 <span>Manager Dashboard</span>
     </a>
 
-    <a href="{{ route('managers.createuser') }}"
+    <a href="{{ route('manager.createuser') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     ➕ <span>Create User</span>
     </a>
-    <a href="{{ route('managers.allusers') }}"
+    <a href="{{ route('manager.allusers') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     👥 <span>View Users</span>
     </a>
+
+        <a href="{{route ('projects.create')}}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        ➕ <span>Create Project</span>
+        </a>
+
+
+        <a href="{{ route('projects.index') }}"
+        class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+        📁 <span>View Projects</span>
+        </a>
 
     @endrole
 
@@ -85,6 +94,9 @@ late-300 hover:bg-slate-800 hover:text-white transition">
     🏠 <span>User Dashboard</span>
      </a>
 
+     <a href="{{route ('user.projects.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+     📁 <span>My Projects</span>
+    </a>
     <a href="{{ route('task.profile') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     🙍 <span>My Profile</span>

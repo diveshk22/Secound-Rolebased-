@@ -3,112 +3,102 @@
 @section('content')
 
 <style>
-    body{ background:#0f172a; font-family: system-ui, -apple-system, sans-serif; }
+body{
+    background:#0f172a;
+    font-family: system-ui, -apple-system, sans-serif;
+}
 
-    .page-title{
-        font-size: 38px;
-        font-weight: 800;
-        color: white;
-        letter-spacing: 1px;
-        margin-bottom: 30px;
-    }
+/* Page Title */
+.page-title{
+    font-size:34px;
+    font-weight:800;
+    color:white;
+    margin-bottom:30px;
+}
 
-    .table-wrapper{
-        backdrop-filter: blur(20px);
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-    }
+/* Glass Table */
+.table-wrapper{
+    backdrop-filter: blur(25px);
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
 
-    table{
-        width:100%;
-        border-collapse: collapse;
-        color:#e5e7eb;
-    }
+/* Table */
+table{
+    width:100%;
+    border-collapse: collapse;
+    color:#e5e7eb;
+}
 
-    thead{
-        background: rgba(255,255,255,0.08);
-        text-transform: uppercase;
-        font-size: 13px;
-        letter-spacing: 1px;
-    }
+thead{
+    background: rgba(255,255,255,0.07);
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
 
-    thead th{
-        padding:18px 24px;
-        text-align: left;
-    }
+thead th{
+    padding:16px 20px;
+    text-align:left;
+}
 
-    tbody tr{
-        transition: 0.3s ease;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
+tbody tr{
+    transition:0.3s ease;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
 
-    tbody tr:hover{
-        background: rgba(255,255,255,0.08);
-        transform: scale(1.01);
-    }
+tbody tr:hover{
+    background: rgba(255,255,255,0.06);
+}
 
-    td{
-        padding:18px 24px;
-        vertical-align: middle;
-    }
+td{
+    padding:16px 20px;
+}
 
-    .email{
-        color:#60a5fa;
-        font-weight:600;
-    }
+/* Email Color */
+.email{
+    color:#60a5fa;
+    font-weight:600;
+}
 
-    .actions{
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
+/* Buttons */
+.actions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    align-items:center;
+}
 
-    .btn{
-        padding:10px 18px;
-        border-radius:10px;
-        font-weight:600;
-        border:none;
-        cursor:pointer;
-        transition:.3s;
-        color:white;
-        text-decoration: none;
-    }
+.btn{
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    border:none;
+    cursor:pointer;
+    transition:.3s;
+    color:white;
+    text-decoration:none;
+}
 
-    .btn-manager{
-        background:#10b981;
-    }
-    .btn-manager:hover{
-        box-shadow:0 0 15px #10b981;
-    }
+.btn-admin{ background:#dc2626; }
+.btn-manager{ background:#10b981; }
+.btn-user{ background:#2563eb; }
+.delete-btn{ background:#ef4444; }
 
-    .btn-admin{
-        background:#dc2626;
-    }
-    .btn-admin:hover{
-        box-shadow:0 0 15px #dc2626;
-    }
+.btn:hover{
+    opacity:0.85;
+    transform:translateY(-2px);
+}
 
-    .btn-user{
-        background:#2563eb;
-    }
-    .btn-user:hover{
-        box-shadow:0 0 15px #2563eb;
-    }
-
-    .delete-btn{
-        background:#ef4444;
-    }
-    .delete-btn:hover{
-        box-shadow:0 0 15px #ef4444;
-    }
-
-    .text-center{
-        text-align:center;
-    }
+.text-center{
+    text-align:center;
+}
 </style>
+
 
 <div class="p-8">
 
@@ -121,54 +111,69 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role Actions</th>
-                    <th class="text-center">Delete</th>
+                    <th>Role</th>
+                    <th>Created By</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 @foreach($users as $user)
                 <tr>
-                    <td class="font-semibold">{{ $user->id }}</td>
+                    <td>{{ $user->id }}</td>
                     <td>{{ $user->name }}</td>
                     <td class="email">{{ $user->email }}</td>
 
+                    {{-- ROLE --}}
                     <td>
+                        @php
+                            $role = $user->getRoleNames()->first();
+                        @endphp
+
+                        @if($role == 'admin')
+                            <span class="btn btn-admin">Admin</span>
+                        @elseif($role == 'manager')
+                            <span class="btn btn-manager">Manager</span>
+                        @else
+                            <span class="btn btn-user">User</span>
+                        @endif
+                    </td>
+
+                    {{-- CREATED BY --}}
+                    <td>
+                        @if($user->creator)
+                            {{ $user->creator->name }}
+                            ({{ $user->creator->getRoleNames()->first() }})
+                        @else
+                            Self
+                        @endif
+                    </td>
+
+                    {{-- ACTIONS --}}
+                    <td class="text-center">
                         <div class="actions">
 
-                            @role('admin')
-                            <form action="{{ url('/user/' . $user->id . '/make-manager') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-manager">
-                                    Make Manager
-                                </button>
-                            </form>
-                            @endrole
+                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                               class="btn btn-user">
+                                Edit
+                            </a>
 
-                            <form action="{{ route('admin.users.changeRole', $user->id) }}" method="POST">
+                            <form id="delete-form-{{ $user->id }}"
+                                  action="{{ route('admin.users.destroy', $user->id) }}"
+                                  method="POST">
                                 @csrf
-                                <button type="submit" class="btn {{ $user->hasRole('admin') ? 'btn-admin' : 'btn-user' }}">
-                                    {{ $user->hasRole('admin') ? 'Admin → Make User' : 'User → Make Admin' }}
+                                @method('DELETE')
+
+                                <button type="button"
+                                        onclick="confirmDelete({{ $user->id }})"
+                                        class="btn delete-btn">
+                                    Delete
                                 </button>
                             </form>
 
                         </div>
                     </td>
 
-                    <td class="text-center">
-                        <form id="delete-form-{{ $user->id }}"
-                              action="{{ route('admin.users.destroy', $user->id) }}"
-                              method="POST">
-                            @csrf
-                            @method('DELETE')
-
-                            <button type="button"
-                                    onclick="confirmDelete({{ $user->id }})"
-                                    class="btn delete-btn">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -176,6 +181,7 @@
         </table>
     </div>
 </div>
+
 
 <!-- SweetAlert CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

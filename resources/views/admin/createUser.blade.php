@@ -10,7 +10,6 @@
         font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Animated background blobs */
     .bg-blur{
         position: fixed;
         inset: 0;
@@ -64,11 +63,6 @@
         background:#0b1220;
     }
 
-    input:-webkit-autofill{
-        -webkit-box-shadow: 0 0 0 1000px #111827 inset !important;
-        -webkit-text-fill-color: #ffffff !important;
-    }
-
     .btn-premium{
         position:relative;
         overflow:hidden;
@@ -89,21 +83,6 @@
         box-shadow:0 20px 45px rgba(99,102,241,0.55);
     }
 
-    .btn-premium::before{
-        content:"";
-        position:absolute;
-        top:0;
-        left:-100%;
-        width:100%;
-        height:100%;
-        background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
-        transition:.6s;
-    }
-
-    .btn-premium:hover::before{
-        left:100%;
-    }
-
     .form-title{
         font-size:34px;
         font-weight:800;
@@ -121,7 +100,7 @@
 
         <h2 class="form-title">➕ Create New User</h2>
 
-        <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-6">
+        <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div>
@@ -134,10 +113,6 @@
                 <input type="email" name="email" class="form-input" placeholder="Enter email" required>
             </div>
 
-            <!-- <div>
-                <label class="form-label">Company Name</label>
-                <input type="text" name="company_name" class="form-input" placeholder="Enter company name" required>
-            </div> -->
             <div>
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-input" placeholder="Enter password" required>
@@ -146,6 +121,15 @@
             <div>
                 <label class="form-label">Confirm Password</label>
                 <input type="password" name="password_confirmation" class="form-input" placeholder="Confirm password" required>
+            </div>
+
+            <div>
+                <label class="form-label">Role</label>
+                <select name="role" class="form-input" required>
+                    <option value="" disabled selected>Select role</option>
+                    <option value="user">User</option>
+                    <option value="manager">Manager</option>
+                </select>
             </div>
 
             <button type="submit" class="btn-premium w-full mt-4">
@@ -157,6 +141,7 @@
     </div>
 
 </div>
+
 <!-- SweetAlert CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -173,5 +158,5 @@
     });
 </script>
 @endif
-    
+
 @endsection

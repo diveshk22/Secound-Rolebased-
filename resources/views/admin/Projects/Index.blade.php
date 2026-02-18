@@ -148,22 +148,35 @@ body {
                             <span class="badge-user">{{ $user->name }}</span>
                         @endforeach
                     </td>
-                    <td class="actions">
-                        <a href="{{ route('admin.projects.task.taskindex', ['project_id' => $project->id]) }}" class="btn-view">View</a>
-                        
-                        <a href="{{ route('admin.projects.task.create', ['project_id' => $project->id]) }}" class="btn-add">Add Task</a>
+<td class="actions">
+    @php
+        // 1. Determine the prefix dynamically for all 3 roles
+        if(auth()->user()->hasRole('admin')) { 
+            $prefix = 'admin'; 
+        } elseif(auth()->user()->hasRole('manager')) { 
+            $prefix = 'manager'; 
+        } else { 
+            $prefix = 'user'; 
+        }
+    @endphp
 
-                        <a href="{{ route('admin.projects.edit', $project->id) }}" class="btn-edit">Edit</a>
+<a href="{{ route('projects.tasks.index', $project->id) }}" class="btn-view">View Tasks</a>
 
-                        <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" onclick="return confirm('Are you sure?')" class="btn-delete">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+@if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('manager'))
+    
+    <a href="{{ route('projects.tasks.create', $project->id) }}" class="btn-add">Add Task</a>
+
+    <a href="{{ route('projects.edit', $project->id) }}" class="btn-edit">Edit</a>
+
+    <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" onclick="return confirm('Are you sure?')" class="btn-delete">
+            Delete
+        </button>
+    </form>
+@endif
+</td>                </tr>
                 @empty
                 <tr>
                     <td colspan="5" class="no-data">No Projects Found</td>

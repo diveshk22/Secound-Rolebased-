@@ -12,32 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Remove tasks assigned to users and created by managers
-        DB::table('tasks')->whereIn('assigned_to', function($query) {
-            $query->select('id')->from('users')->whereHas('roles', function($q) {
-                $q->whereIn('name', ['user', 'manager']);
-            });
-        })->delete();
-
-        DB::table('tasks')->whereIn('user_id', function($query) {
-            $query->select('id')->from('users')->whereHas('roles', function($q) {
-                $q->whereIn('name', ['user', 'manager']);
-            });
-        })->delete();
-
-        // Remove project assignments for users and managers
-        DB::table('project_users')->whereIn('user_id', function($query) {
-            $query->select('id')->from('users')->whereHas('roles', function($q) {
-                $q->whereIn('name', ['user', 'manager']);
-            });
-        })->delete();
-
-        // Remove comments from tasks (since tasks are task-related)
-        DB::table('comments')->whereIn('user_id', function($query) {
-            $query->select('id')->from('users')->whereHas('roles', function($q) {
-                $q->whereIn('name', ['user', 'manager']);
-            });
-        })->delete();
+        // Remove tasks assigned to users and created
     }
 
     /**

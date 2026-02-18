@@ -9,16 +9,23 @@ use Symfony\Component\HttpFoundation\Response;
 class RoleMiddleware
 {
     // Handle an incoming request.
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next,  ...$roles): Response
     {
         if (!auth()->check()) {
-            return redirect()->route('login');
+            return redirect('login');
+        }   
+
+        // dd($roles);
+        $hasAccess = false;
+        foreach ($roles as $role){
+            if(auth()->user()->hasRole($role)){
+                $hasAccess = true;
+                break;
+            }
         }
-        
-        if (!auth()->user()->hasRole($role)) {
-            abort(403, 'Access Denied');
+        if (!$hasAccess) {
+            abort(403, 'Access Denied: You do not have the required role(s) to access this page.');
         }
-        
         return $next($request);
     }
 }

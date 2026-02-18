@@ -9,15 +9,24 @@ use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    public function index()
+   public function index()
     {
+    $user = auth()->user();
+
+    if($user->hasRole('admin')) {
         $projects = Project::with('users')->get();
-        return view('admin.projects.index', compact('projects'));
+    } else {
+        $projects = $user->projects()->with('users')->get();
+    }
+
+    return view('admin.projects.index', compact('projects'));
     }
 
     public function create()
     {
-        $users = User::All();
+        $users = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['manager', 'user']);
+        })->get();
 
         return view('admin.projects.create', compact('users'));
     }
@@ -38,7 +47,17 @@ class ProjectController extends Controller
         ]);
 
         // ✅ Attach users (many-to-many)
-        $project->users()->attach($request->users);
+        $userIds = $request->users;
+        
+        // ✅ Auto-assign Manager who created the project
+        if (auth()->user()->hasRole('manager') && !in_array(auth()->id(), $userIds)) {
+            $userIds[] = auth()->id();
+        }
+        
+        $project->users()->attach($userIds);
+
+        // managers to provide access project create
+        $route = auth()->user()->hasRole('manager') ? 'manager.projects.index' : 'admin.projects.index';
 
         return back()
             ->with('success', 'Project Created Successfully');
@@ -55,8 +74,9 @@ class ProjectController extends Controller
     public function edit($id)
     {
         $project = Project::findOrFail($id);
-        $users = User::All();
-
+        $users = User::whereHas('roles', function($query) {
+            $query->whereIn('name', ['manager', 'user']);
+        })->get();
         return view('admin.projects.editproject', compact('project', 'users'));
     }
 

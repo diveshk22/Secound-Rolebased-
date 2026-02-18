@@ -20,14 +20,7 @@ class Task extends Model
 
     // Task statuses
     public const STATUSES  = [
-        'Select',
-        'backlog',
-        'ToDo',
-        'In Progress',
-        'QA',
-        'shared for UAT',
-        'Done',
-        'Reject',
+        'pending',
     ];
 
     // Task belongs to a user (creator) - Admin/SuperAdmin only
@@ -51,5 +44,10 @@ class Task extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class, 'task_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(project::class, 'project_id');
     }
 }

@@ -80,13 +80,19 @@
         }
     }
 </style>
-    <div>
-        <a href="{{ route('admin.projects.index') }}" class="btn btn-secondary mb-3">Back to Projects</a>
-    </div>
+<div>
+    <a href="{{ route('projects.index') }}" 
+       class="btn btn-secondary mb-3">
+        Back to Projects
+    </a>
+</div>
+
+
 <div class="project-form-wrapper">
     <h2>Edit Project</h2>
 
-    <form action="{{ route('admin.projects.update', $project->id) }}" method="POST">
+<form action="{{ route('projects.update', ['id' => $project->id]) }}" method="POST">
+
         @csrf
         @method('PUT')
 

@@ -14,22 +14,24 @@ class RolePermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create permissions
-        Permission::firstOrCreate(['name' => 'manage tasks']);
-        Permission::firstOrCreate(['name' => 'view tasks']);
-        Permission::firstOrCreate(['name' => 'create tasks']);
-        Permission::firstOrCreate(['name' => 'edit tasks']);
-        Permission::firstOrCreate(['name' => 'delete tasks']);
+        Permission::firstOrCreate(['name' => 'manage tasks', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'view tasks', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'create tasks', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'edit tasks', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'delete tasks', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'view projects', 'guard_name' => 'web']);
+        Permission::firstOrCreate(['name' => 'create projects', 'guard_name' => 'web']);
 
         // Create roles
-        $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
-        $adminRole      = Role::firstOrCreate(['name' => 'admin']);
-        $managerRole    = Role::firstOrCreate(['name' => 'manager']); // ✅ yeh missing tha
-        $userRole       = Role::firstOrCreate(['name' => 'user']);
+        $superadminRole = Role::firstOrCreate(['name' => 'superadmin', 'guard_name' => 'web']);
+        $adminRole      = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $managerRole    = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'web']); // ✅ yeh missing tha
+        $userRole       = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
         // Assign permissions to roles
         $superadminRole->syncPermissions(Permission::all());
         $adminRole->syncPermissions(Permission::all());
-        $managerRole->syncPermissions(['view tasks', 'create tasks', 'edit tasks']);
+        $managerRole->syncPermissions(['view tasks', 'create tasks', 'edit tasks', 'view projects', 'create projects']);
         $userRole->syncPermissions(['view tasks', 'create tasks']);
     }
 }

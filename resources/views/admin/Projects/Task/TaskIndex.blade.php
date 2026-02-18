@@ -112,7 +112,7 @@ body{
 
 <div class="task-container">
 
-    <a href="{{route ('admin.projects.index')}}" class="back-link">← Back to Projects</a>
+<a href="{{ route('admin.projects.index') }}">Back</a>
 
     <div class="task-title">📋 All Tasks</div>
 
@@ -124,7 +124,7 @@ body{
                 <th>Due Date</th>
                 <th>Assigned To</th>
                 <th>Status</th>
-                <th>Comments</th>
+                <!-- <th>Comments</th> -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -163,16 +163,16 @@ body{
                     </span>
                 </td>
 
-                <td>
+                <!-- <td>
                     {{ $task->comments->count() }} Comments
-                </td>
+                </td> -->
 
                 <td>
-                    <a href="{{ route('admin.task.edit', $task->id) }}" class="action-btn edit-btn">
+                    <a href="{{ route('admin.projects.task.edit', $task->id) }}" class="action-btn edit-btn">
                         Edit
                     </a>
 
-                    <form action="{{ route('admin.task.delete', $task->id) }}" method="POST" style="display:inline;">
+                    <form action="{{ route('admin.projects.task.delete', $task->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -182,10 +182,10 @@ body{
                         </button>
                     </form>
 
-                    <a href="{{ route('admin.task.show', $task->id) }}"
+                    <!-- <a href="{{ route('admin.projects.task.show', $task->id) }}"
                        class="action-btn comment-btn">
                         Comments
-                    </a>
+                    </a> -->
                 </td>
             </tr>
             @empty

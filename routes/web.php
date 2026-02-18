@@ -17,9 +17,18 @@ Route::get('/', function () {
 })->name('/');
 
 // USER CREATION ROUTES
-Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-Route::post('/admin/users/store', [UserController::class, 'store'])->name('admin.users.store');
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+Route::resource('admin/users', UserController::class)->names([
+    'index' => 'admin.users.index',
+    'create' => 'admin.users.create',
+    'store' => 'admin.users.store',
+    'show' => 'admin.users.show',
+    'edit' => 'admin.users.edit',
+    'update' => 'admin.users.update',
+    'destroy' => 'admin.users.destroy'
+]);
+});
 
 //LOGIN ROUTES (missing the)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -36,8 +45,6 @@ Route::post('/password/email', function () {
     return back()->with('status', 'Password reset link sent!');
 })->name('password.email');
 
-
-
 // Super-Admin all routes 
 Route::middleware(['auth', 'redirect.role:superadmin'])->group(function () {
 Route::get('/superadmin/Super-dashboard', [App\Http\Controllers\superadmin\SuperAdminController::class, 'index'])->name('superadmin.superdashboard');
@@ -47,22 +54,6 @@ Route::post('/superadmin/users/{id}/role', [App\Http\Controllers\superadmin\Supe
 
 // show peniding tasks to user or completed tasks
 Route::get('/admin/task/status/{id}', [App\Http\Controllers\Admin\TaskController::class, 'updateStatus'])->name('admin.task.updateStatus');
-
-// view routes for task details
-Route::middleware(['auth', 'redirect.role:admin'])->group(function () {
-Route::get('/admin/task', [TaskController::class, 'index'])->name('admin.task.index');
-Route::get('/admin/task/createtask', [TaskController::class, 'create'])->name('admin.task.createtask');
-Route::post('/admin/task/store', [TaskController::class, 'store'])->name('admin.task.store');
-Route::get('/admin/task/{id}', [TaskController::class, 'show'])->name('admin.task.show');
-Route::get('/admin/task/{id}/edit', [TaskController::class, 'edit'])->name('admin.task.edit');
-Route::put('/admin/task/{id}', [TaskController::class, 'update'])->name('admin.task.update');
-Route::delete('/admin/task/{id}', [TaskController::class, 'destroy'])->name('admin.task.destroy');
-Route::delete('/admin/task/{id}', [TaskController::class, 'destroy'])->name('admin.task.delete');
-
-
-});
-
-
 
 // routes function to dashboard based on role
 Route::get('/redirect', function () {
@@ -99,51 +90,58 @@ Route::get('/admin/dashboard',[AdminDashboardController::class, 'index'])->name(
 Route::post('/user/{id}/make-manager', [UserController::class, 'makeManager'])
     ->middleware('role:admin');
 
-
-// Projects Admin Routes
-Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-
+// SHARED ROUTES (No prefix, accessible by both)
+Route::middleware(['auth', 'role:admin,manager'])->group(function () {
+    
+    // Project Routes
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/admin/projects', [ProjectController::class, 'index'])->name('admin.projects.index');
+    Route::get('/manager/projects', [ProjectController::class, 'index'])->name('manager.projects.index');
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/projects/store', [ProjectController::class, 'store'])->name('projects.store');
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-
-    // Project Tasks Routes
-    Route::get('/projects/{project_id}/tasks', [TaskController::class, 'taskIndex'])->name('projects.task.taskindex');
-    Route::get('/projects/{project_id}/tasks/create', [TaskController::class, 'taskCreate'])->name('projects.task.create');
-
+    
+    // Task Routes
+    Route::get('/projects/{project_id}/tasks', [TaskController::class, 'Index'])->name('projects.tasks.index');
+    Route::get('/projects/{project_id}/tasks/create', [TaskController::class, 'create'])->name('projects.tasks.create');
+    Route::post('/projects/{project_id}/tasks', [TaskController::class, 'store'])->name('projects.tasks.store');
+    Route::get('/task/{id}/edit', [TaskController::class, 'edit'])->name('admin.projects.task.edit');
+    Route::put('/task/{id}', [TaskController::class, 'update'])->name('admin.projects.task.update');
+    Route::delete('/task/{id}', [TaskController::class, 'destroy'])->name('admin.projects.task.delete');
+    Route::get('/task/{id}/show', [TaskController::class, 'show'])->name('admin.projects.task.show');
 });
 
-
-//USER DASHBOARD
-Route::middleware(['auth', 'redirect.role:user'])->group(function(){
-Route::get('/user/dashboard',[UserDashboardController::class, 'index'])->name('user.dashboard');
+// MANAGER-ONLY ROUTES (Specific management tasks)
+Route::middleware(['auth', 'role:manager'])->group(function () {
+    Route::get('/manager/dashboard', [ManagerDashboardController::class, 'index'])->name('manager.dashboard');
+    Route::get('/manager/createuser', [CreateUController::class, 'create'])->name('manager.createuser');
+    Route::post('/manager/users/store', [CreateUController::class, 'store'])->name('manager.users.store');
+    Route::get('/manager/allusers', [CreateUController::class, 'allUsers'])->name('manager.allusers');
 });
 
+// USER DASHBOARD & PROJECT ACCESS
+Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
 
+    // Projects: Users see ONLY projects they belong to
+    // This creates 'user.projects.index' -> URL: /user/projects
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 
-// managers routes
-Route::middleware(['role:manager'])->group(function () {
-Route::get('/manager/dashboard', [App\Http\Controllers\Managers\ManagerDashboardController::class, 'index'])->name('managers.managerdashboard'); 
-Route::get('/managers/createuser', [App\Http\Controllers\Managers\CreateUController::class, 'create'])->name('managers.createuser');
-Route::get('/managers/allusers', [App\Http\Controllers\Managers\CreateUController::class, 'allUsers'])->name('managers.allusers');
-Route::post('/managers/storeuser', [App\Http\Controllers\Managers\CreateUController::class, 'store'])->name('managers.storeUser');
+    // Project Tasks: Users see ALL tasks in projects they belong to
+    // This creates 'user.projects.tasks.index' -> URL: /user/projects/{id}/tasks
+    Route::get('/projects/{project_id}/tasks', [TaskController::class, 'taskIndex'])->name('projects.tasks.index');
+    
+    // Legacy support for your existing "my-tasks"
+    Route::get('my-tasks', [TaskController::class, 'myTasks'])->name('mytasks');
 });
 
-
-
-
-// USER PROFILE UPDATE ROUTE
+// SHARED AUTH ROUTES (Profile)
 Route::middleware(['auth'])->group(function () {
-Route::get('/user/task/profile', [ProfileController::class, 'edit'])->name('task.profile');
-Route::post('/user/task/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/user/task/profile', [ProfileController::class, 'edit'])->name('task.profile');
+    Route::post('/user/task/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
- 
-
-//  users profile route 
-Route::get('/profile', [\App\Http\Controllers\User\ProfileController::class, 'edit'])
-    ->middleware('auth')
-    ->name('profile.edit');

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -33,7 +34,10 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'created_by');
     }
 
-
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class , 'project_users' , 'user_id' , 'project_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -57,6 +61,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-
 }

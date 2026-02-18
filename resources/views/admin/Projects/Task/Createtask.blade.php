@@ -129,9 +129,7 @@
     }
 </style>
 
-    <div>
-    <a href="{{route ('admin.projects.index')}}">Back</a>
-    </div>
+<a href="{{ route('projects.index') }}">Back</a>
 
 <div class="task-card">
     <h2>Create New Task</h2>
@@ -145,7 +143,8 @@
             </ul>
         </div>
     @endif
-<form action="{{ route('admin.task.store') }}" method="POST">
+     <form action="{{ route('projects.tasks.store', $project_id) }}" method="POST">
+
     @csrf
 
     <input type="hidden" name="project_id" value="{{ $project_id }}">

@@ -82,15 +82,14 @@
     }
 
 </style>
-        <div>
-    <a href="{{route ('admin.task.index')}}">Back</a>
-    </div>
-<div class="view-card">
+<a href="{{ route('projects.tasks.index', $task->project_id) }}">Back</a>
+
+   <div class="view-card">
     <h2>Edit Task</h2>
 
-    <form action="{{ url('/admin/task/' . $task->id) }}" method="POST">
+    <form action="{{ route('admin.projects.task.update', $task->id) }}" method="POST">
         @csrf
-@method('PUT')  
+        @method('PUT')  
         <label>Task Title</label>
         <input type="text" name="title" value="{{ $task->title }}" required>
 
@@ -99,15 +98,6 @@
 
         <label>Due Date</label>
         <input type="date" name="due_date" value="{{ $task->due_date }}">
-
-        <label>Status</label>
-        <select name="status">
-            <option value="pending" {{ $task->status=='pending'?'selected':'' }}>Pending</option>
-            <option value="in progress" {{ $task->status=='in progress'?'selected':'' }}>In Progress</option>
-            <option value="completed" {{ $task->status=='completed'?'selected':'' }}>Completed</option>
-            <option value="rejected" {{ $task->status=='rejected'?'selected':'' }}>Rejected</option>
-        </select>
-
         <label>Assign User</label>
         <select name="assigned_to">
             @foreach($users as $user)
@@ -120,5 +110,19 @@
         <button type="submit" class="btn-update">Update Task</button>
     </form>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session("success") }}',
+        confirmButtonColor: '#0ea5e9',
+        background: '#1e293b',
+        color: '#fff'
+    });
+</script>
+@endif
 
 @endsection

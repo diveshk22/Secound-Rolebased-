@@ -15,36 +15,17 @@ class UserController extends Controller
         return back()->with('success', 'User deleted successfully');
     }
 
-    // Make Manager
-    public function makeManager($id)
-    {
-        $user = User::findOrFail($id);
-        $user->syncRoles('manager');
-
-        return back()->with('success', 'User is now a Manager');
-    }
-
-    // Change Role Admin <-> User
-    public function changeRole(User $user)
-    {
-        if ($user->hasRole('admin')) {
-            $user->syncRoles('user');
-        } else {
-            $user->syncRoles('admin');
-        }
-
-        return redirect()->back()->with('success', 'User role updated successfully');
-    }
-
     // Show create form
     public function create()
     {
-        return view('admin.createuser');
+        
+        return view('admin.createUser');
     }
 
     // user index with role-based visibility
     public function index()
     {
+        
         $authUser = auth()->user();
 
         if ($authUser->hasRole('superadmin')) {
@@ -60,7 +41,7 @@ class UserController extends Controller
             // Admin sees only users
             $users = User::with('creator')
                 ->whereHas('roles', function ($q) {
-                    $q->where('name', 'user');
+                    $q->whereIn('name', ['manager', 'user']);
                 })
                 ->get();
         }
@@ -86,6 +67,7 @@ class UserController extends Controller
             'name' => 'required',
             'email'=> 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'role' => 'required',
         ]);
 
         $user = User::create([
@@ -94,9 +76,42 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'created_by' => auth()->id(),   // ⭐ IMPORTANT
         ]);
+    //    dd($user->getRoleNames());
 
-        $user->assignRole('user');
+        $user->assignRole($request->role); // Assign role to user
 
         return redirect()->back()->with('success', 'User created successfully');
     }
+
+    // Show single user
+    public function show($id)
+    {
+        return redirect()->route('admin.users.index');
+    }
+    // Show edit form
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        
+        return view('admin.useredit', compact('user'));
+    }
+
+    // Update user
+
+    public function update(Request $request, $id)
+    {
+    $user = User::findOrFail($id);
+
+    $user->name = $request->name;
+    $user->email = $request->email;
+
+    if ($request->filled('password')) {
+        $user->password = bcrypt($request->password);
+    }
+
+    $user->save();
+
+    return back()->with('updated', 'User updated successfully!');
+    }
+
 }

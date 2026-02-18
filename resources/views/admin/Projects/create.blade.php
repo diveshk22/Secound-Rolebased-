@@ -83,8 +83,9 @@ label {
     <div class="card">
         <h2>Create Project</h2>
 
-        <form action="{{ route('admin.projects.store') }}" method="POST">
-            @csrf
+        <form action="{{ route('projects.store') }}" 
+        method="POST">
+        @csrf
 
             <div class="form-group">
                 <label>Project Name</label>

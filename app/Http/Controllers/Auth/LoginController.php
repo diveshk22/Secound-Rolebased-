@@ -22,6 +22,29 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
         
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+            if($user->hasRole('superadmin')){
+                return redirect()->route('superadmin.superdashboard');
+            }
+            if($user->hasRole('admin')){
+                return redirect()->route('admin.dashboard');
+        }
+            if($user->hasRole('manager')){
+                return redirect()->route('manager.dashboard');
+        }
+            if($user->hasRole('user')){
+                return redirect()->route('user.dashboard');
+        }
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'No valid role assigned. Please contact administrator.');
+            return redirect()->route('login')->with('error', 'Invalid Username or Password');
+        }
+
+        return back()->with('error', 'Invalid Username or Password');
+
         // Check for plain text password first
         $user = \App\Models\User::where('email', $request->email)->first();
         
@@ -60,7 +83,7 @@ class LoginController extends Controller
         }
         
         if($user->hasRole('manager')){
-            return redirect()->route('managers.managerdashboard');
+            return redirect()->route('manager.dashboard');
         }
         
         if($user->hasRole('user')){

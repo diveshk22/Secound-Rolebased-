@@ -113,7 +113,7 @@
 <div class="form-wrapper">
     <div class="form-title">Create New User</div>
 
-    <form action="{{ route('managers.storeUser') }}" method="POST">
+    <form action="{{ route('manager.users.store') }}" method="POST">
         @csrf
 
         <div class="form-group">
