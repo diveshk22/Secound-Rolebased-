@@ -85,11 +85,9 @@ body{
 
 .edit-btn{ background:#3b82f6; }
 .delete-btn{ background:#ef4444; }
-.comment-btn{ background:#22c55e; }
 
 .edit-btn:hover{ background:#2563eb; }
 .delete-btn:hover{ background:#dc2626; }
-.comment-btn:hover{ background:#16a34a; }
 
 .back-link{
     display:inline-block;
@@ -112,7 +110,7 @@ body{
 
 <div class="task-container">
 
-<a href="{{ route('admin.projects.index') }}">Back</a>
+<a href="{{ route('projects.index') }}">Back</a>
 
     <div class="task-title">📋 All Tasks</div>
 
@@ -124,7 +122,6 @@ body{
                 <th>Due Date</th>
                 <th>Assigned To</th>
                 <th>Status</th>
-                <!-- <th>Comments</th> -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -163,16 +160,13 @@ body{
                     </span>
                 </td>
 
-                <!-- <td>
-                    {{ $task->comments->count() }} Comments
-                </td> -->
-
                 <td>
-                    <a href="{{ route('admin.projects.task.edit', $task->id) }}" class="action-btn edit-btn">
+                    <a href="{{ route('projects.task.edit', $task->id) }}" class="action-btn edit-btn">
                         Edit
                     </a>
 
-                    <form action="{{ route('admin.projects.task.delete', $task->id) }}" method="POST" style="display:inline;">
+                    @unless(auth()->user()->hasRole('user'))
+                    <form action="{{ route('projects.task.delete', $task->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -181,16 +175,12 @@ body{
                             Delete
                         </button>
                     </form>
-
-                    <!-- <a href="{{ route('admin.projects.task.show', $task->id) }}"
-                       class="action-btn comment-btn">
-                        Comments
-                    </a> -->
+                    @endunless
                 </td>
             </tr>
             @empty
             <tr>
-            <td colspan="7" class="no-task">No tasks found.</td>
+            <td colspan="6" class="no-task">No tasks found.</td>
             </tr>
             @endforelse
         </tbody>

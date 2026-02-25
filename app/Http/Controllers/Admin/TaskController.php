@@ -13,11 +13,16 @@ class TaskController extends Controller
     // Show tasks of specific project
     public function index($project_id)
     {
+        $query = Task::where('project_id', $project_id);
         $tasks = Task::where('project_id', $project_id)
-        ->with(['user', 'assignedUser', 'comments.user'])
-        ->latest()
-        ->distinct()
-        ->get();
+        ->with(['user', 'assignedUser'])
+        ->latest();
+
+        if(auth()->user()->hasRole('user')) {
+        $query->where('assigned_to', auth()->id());
+    }
+
+    $tasks = $query->get();
 
     return view('admin.Projects.Task.TaskIndex', compact('tasks', 'project_id'));
     }
@@ -64,31 +69,39 @@ class TaskController extends Controller
         return view('admin.Projects.Task.TaskShow', compact('task'));
     }
 
-    // Edit task
+    // Show edit task form
     public function edit($id)
     {
-        $task = Task::findOrFail($id);
-        $users = User::whereHas('projects', function($query) use ($task) {
-            $query->where('project_id', $task->project_id);
-        })->get();
-
+        $task = Task::with(['project'])->findOrFail($id);
+        $users = $task->project->users;
+        
         return view('admin.Projects.Task.edit-task', compact('task', 'users'));
     }
 
-    // Update task
+    // Edit task update
     public function update(Request $request, $id)
-    {
-        $task = Task::findOrFail($id);
+   {
+    $task = Task::findOrFail($id);
 
-        $task->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'due_date' => $request->due_date,
-            'assigned_to' => $request->assigned_to,
-        ]);
+    $request->validate([
+        'title'       => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'due_date'    => 'nullable|date',
+        'assigned_to' => 'required|exists:users,id',
+        'status'      => 'required|in:pending,inprogress,completed',
+    ]);
 
-        return back()->with('success', 'Task updated successfully.');
+    $task->update([
+        'title'       => $request->title,
+        'description' => $request->description,
+        'due_date'    => $request->due_date,
+        'assigned_to' => $request->assigned_to,
+        'status'      => $request->status,
+    ]);
+
+    return back()->with('success', 'Task updated successfully.');
     }
+
 
     // Delete task
     public function destroy($id)
@@ -96,5 +109,16 @@ class TaskController extends Controller
         Task::findOrFail($id)->delete();
 
         return back()->with('success', 'Task Deleted Successfully');
+    }
+
+    // User: View all my tasks
+    public function myTasks()
+    {
+        $tasks = Task::where('assigned_to', auth()->id())
+            ->with(['project', 'user'])
+            ->latest()
+            ->get();
+
+        return view('User.mytasks', compact('tasks'));
     }
 }

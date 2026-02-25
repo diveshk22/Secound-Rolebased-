@@ -81,35 +81,65 @@
         box-shadow:0 10px 25px rgba(56,189,248,0.4);
     }
 
-</style>
-<a href="{{ route('projects.tasks.index', $task->project_id) }}">Back</a>
+    .btn-delete{
+        margin-top:15px;
+        width:100%;
+        padding:12px;
+        border:none;
+        border-radius:12px;
+        background: linear-gradient(135deg,#ef4444,#dc2626);
+        color:white;
+        font-weight:700;
+        font-size:14px;
+        cursor:pointer;
+        transition: all .3s ease;
+    }
 
-   <div class="view-card">
+    .btn-delete:hover{
+        transform: translateY(-2px);
+        box-shadow:0 10px 25px rgba(239,68,68,0.4);
+    }
+</style>
+
+<a href="{{ route('projects.tasks.index', $task->project_id) }}" style="color:white;">Back</a>
+
+<div class="view-card">
     <h2>Edit Task</h2>
 
-    <form action="{{ route('admin.projects.task.update', $task->id) }}" method="POST">
+    <form action="{{ route('projects.task.update', $task->id) }}" method="POST">
         @csrf
-        @method('PUT')  
+        @method('PUT')
+
         <label>Task Title</label>
         <input type="text" name="title" value="{{ $task->title }}" required>
 
         <label>Description</label>
-        <textarea name="description" rows="5">{!! $task->description !!}</textarea>
+        <textarea name="description" rows="5">{{ $task->description }}</textarea>
 
         <label>Due Date</label>
         <input type="date" name="due_date" value="{{ $task->due_date }}">
+
         <label>Assign User</label>
         <select name="assigned_to">
-            @foreach($users as $user)
-                <option value="{{ $user->id }}" {{ $task->assigned_to==$user->id?'selected':'' }}>
-                    {{ $user->name }}
+            @foreach($users as $u)
+                <option value="{{ $u->id }}" {{ $task->assigned_to==$u->id?'selected':'' }}>
+                    {{ $u->name }}
                 </option>
             @endforeach
         </select>
 
+        <label>Status</label>
+        <select name="status">
+            <option value="pending" {{ $task->status=='pending'?'selected':'' }}>Pending</option>
+            <option value="inprogress" {{ $task->status=='inprogress'?'selected':'' }}>In Progress</option>
+            <option value="completed" {{ $task->status=='completed'?'selected':'' }}>Completed</option>
+        </select>
+
         <button type="submit" class="btn-update">Update Task</button>
     </form>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if(session('success'))

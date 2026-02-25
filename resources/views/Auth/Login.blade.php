@@ -146,7 +146,6 @@
 
         <!-- Submit Button -->
         <button type="submit">Login</button>
-        <a href="{{ route('password.request') }}">Forgot Password</a>
     </form>
 </div>
 

@@ -38,8 +38,7 @@ class DashboardController extends Controller
         $todayUsers = User::whereDate('created_at', Carbon::today())->count();
         $totalTasks = Task::count();
         $todayTasks = Task::whereDate('created_at', Carbon::today())->count();
-        $pendingTasks = 0; // Status column doesn't exist in tasks table
-        
+        $pendingTasks = Task::where('status', 'pending')->count();
         return view('admin.AdminDashboard', compact('totalUsers', 'todayUsers', 'totalTasks', 'todayTasks', 'pendingTasks'));
     }
 }

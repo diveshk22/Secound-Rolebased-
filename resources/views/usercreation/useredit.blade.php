@@ -80,14 +80,14 @@
 
 </style>
 
-    <a href="{{ route('admin.users.index') }}" class="btn btn-user">Back to Users List</a>
+    <a href="{{ route('users.index') }}" class="btn btn-user">Back to Users List</a>
 <div class="p-8">
 
     <h2 class="page-title">✏️ Edit User</h2>
 
     <div class="form-wrapper">
 
-        <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+        <form action="{{ route('users.update', $user->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -101,6 +101,15 @@
                 <input type="email" name="email" value="{{ $user->email }}" required>
             </div>
 
+        @if(auth()->user()->hasRole(['admin' , 'super_admin']))
+        <div class="mb-3">
+        <label>Role</label>
+        <select name="role" class="form-control">
+        <option value="manager" {{ $user->role == 'manager' ? 'selected' : '' }}>Manager</option>
+        <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
+        </select>
+        </div>
+        @endif
             <div class="form-group">
                 <label>Password (Leave blank to keep current)</label>
                 <input type="password" name="password">

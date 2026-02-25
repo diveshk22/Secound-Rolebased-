@@ -9,6 +9,14 @@ use App\Models\Project;
 
 class ProjectController extends Controller
 {
+    // ek me kar dia isko har jgah user where has par use kar sako
+    private function getProjectUsers()
+    {
+            return User::whereHas('roles', function($query) {
+        $query->whereIn('name', ['manager', 'user']);
+    })->get(); 
+    }
+
    public function index()
     {
     $user = auth()->user();
@@ -24,9 +32,7 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $users = User::whereHas('roles', function($query) {
-            $query->whereIn('name', ['manager', 'user']);
-        })->get();
+        $users = $this->getProjectUsers();
 
         return view('admin.projects.create', compact('users'));
     }
@@ -58,7 +64,6 @@ class ProjectController extends Controller
 
         // managers to provide access project create
         $route = auth()->user()->hasRole('manager') ? 'manager.projects.index' : 'admin.projects.index';
-
         return back()
             ->with('success', 'Project Created Successfully');
     }
@@ -74,9 +79,7 @@ class ProjectController extends Controller
     public function edit($id)
     {
         $project = Project::findOrFail($id);
-        $users = User::whereHas('roles', function($query) {
-            $query->whereIn('name', ['manager', 'user']);
-        })->get();
+        $users = $this->getProjectUsers();
         return view('admin.projects.editproject', compact('project', 'users'));
     }
 

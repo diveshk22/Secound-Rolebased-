@@ -100,7 +100,7 @@
 
         <h2 class="form-title">➕ Create New User</h2>
 
-        <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <div>
@@ -123,14 +123,20 @@
                 <input type="password" name="password_confirmation" class="form-input" placeholder="Confirm password" required>
             </div>
 
-            <div>
-                <label class="form-label">Role</label>
-                <select name="role" class="form-input" required>
-                    <option value="" disabled selected>Select role</option>
-                    <option value="user">User</option>
-                    <option value="manager">Manager</option>
-                </select>
-            </div>
+            @if(auth()->user()->hasRole('manager'))
+            <input type="hidden" name="role" value="user">
+            @endif
+
+            @if(auth()->user()->hasRole(['admin' , 'super_admin']))
+        <div>
+        <label class="form-label">Role</label>
+        <select name="role" class="form-input" required>
+            <option value="manager">Manager</option>
+            <option value="user">User</option>
+        </select>
+    </div>
+@endif
+
 
             <button type="submit" class="btn-premium w-full mt-4">
                 🚀 Create User
@@ -157,6 +163,7 @@
         confirmButtonColor: '#3b82f6'
     });
 </script>
+
 @endif
 
 @endsection

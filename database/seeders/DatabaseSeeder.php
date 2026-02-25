@@ -17,19 +17,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(RolePermissionSeeder::class);
-        
-        // Create superadmin user
-        $superadmin = User::firstOrCreate(
-            ['email' => 'superadmin@gmail.com'],
-            [
-                'name' => 'Super Admin',
-                'password' => Hash::make('password')
-            ]
-        );
-        
-        if (!$superadmin->hasRole('superadmin')) {
-            $superadmin->assignRole('superadmin');
-        }
 
         // Admin 
         $admin = User::firstOrCreate(

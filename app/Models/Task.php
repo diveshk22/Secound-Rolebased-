@@ -41,10 +41,10 @@ class Task extends Model
     }
 
     // Task has many comments - Admin/SuperAdmin only
-    public function comments()
-    {
-        return $this->hasMany(Comment::class, 'task_id');
-    }
+    // public function comments()
+    // {
+    //     return $this->hasMany(Comment::class, 'task_id');
+    // }
 
     public function project()
     {

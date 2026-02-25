@@ -11,22 +11,32 @@
     {{-- Menu --}}
     <nav class="flex-1 p-4 space-y-2 text-sm">
 
-    @role('superadmin')
-    <a href="{{ route('superadmin.superdashboard') }}"
+    <!---------------------------------------------Super Admin ----------------------------------------------------------------->
+    @role('super_admin')
+
+    <a href="{{ route('superadmin.dashboard') }}"  class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
+    🛠️ <span>SuperAdmin Dashboard</span></a>
+    
+        <a href="{{ route('users.create') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-    🔧 <span>Super Admin Dashboard</span>
+     ➕ <span>Create User</span>
+     
+    <a href="{{ route('users.index') }}"
+    class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
+    <span class="text-lg">👥</span>
+    <span class="font-medium">View Users</span>
     </a>
-    <a href="{{ route('super.users') }}"
-    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
-    👥 <span>Manage Users</span>
-    </a>
+
+
     @endrole
+
+    <!---------------------------------------------Admin ---------------------------------------------------->
      @role('admin')
     <a href="{{ route('admin.dashboard') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     🛠️ <span>Admin Dashboard</span>
     </a>
-    <a href="{{ route('admin.users.create') }}"
+    <a href="{{ route('users.create') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
      ➕ <span>Create User</span>
     </a>
@@ -47,7 +57,7 @@
     </a>
 
     <!-- View Users -->
-    <a href="{{ route('admin.users.index') }}"
+    <a href="{{ route('users.index') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition">
     <span class="text-lg">👥</span>
     <span class="font-medium">View Users</span>
@@ -62,11 +72,11 @@
     📊 <span>Manager Dashboard</span>
     </a>
 
-    <a href="{{ route('manager.createuser') }}"
+    <a href="{{ route('users.create') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     ➕ <span>Create User</span>
     </a>
-    <a href="{{ route('manager.allusers') }}"
+    <a href="{{ route('users.index') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     👥 <span>View Users</span>
     </a>
@@ -97,7 +107,7 @@
      <a href="{{route ('user.projects.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
      📁 <span>My Projects</span>
     </a>
-    <a href="{{ route('task.profile') }}"
+    <a href="{{ route('profile.edit') }}"
     class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition">
     🙍 <span>My Profile</span>
     </a>

@@ -153,27 +153,25 @@ td{
                     <td class="text-center">
                         <div class="actions">
 
-                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                            <a href="{{ route('users.edit', $user->id) }}"
                                class="btn btn-user">
                                 Edit
                             </a>
-
+                            @if(auth()->user()->hasAnyRole(['admin', 'super_admin']))
                             <form id="delete-form-{{ $user->id }}"
-                                  action="{{ route('admin.users.destroy', $user->id) }}"
+                                  action="{{ route('users.destroy', $user->id) }}"
                                   method="POST">
                                 @csrf
                                 @method('DELETE')
-
                                 <button type="button"
                                         onclick="confirmDelete({{ $user->id }})"
                                         class="btn delete-btn">
                                     Delete
                                 </button>
                             </form>
-
+                            @endif
                         </div>
                     </td>
-
                 </tr>
                 @endforeach
             </tbody>

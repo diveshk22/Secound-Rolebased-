@@ -91,7 +91,7 @@
 <div class="project-form-wrapper">
     <h2>Edit Project</h2>
 
-<form action="{{ route('projects.update', ['id' => $project->id]) }}" method="POST">
+<form action="{{ route('projects.update', ['project' => $project->id]) }}" method="POST">
 
         @csrf
         @method('PUT')
