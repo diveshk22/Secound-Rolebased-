@@ -15,9 +15,9 @@ class RoleMiddleware
         }
 
         $user = auth()->user();
+        $allowedRoles = collect($roles)->flatMap(fn($role) => explode('|', $role))->toArray();
 
-        // agar user ke paas roles me se koi bhi ek role hai
-        if ($user->hasAnyRole($roles)) {
+        if ($user->hasAnyRole($allowedRoles)) {
             return $next($request);
         }
 

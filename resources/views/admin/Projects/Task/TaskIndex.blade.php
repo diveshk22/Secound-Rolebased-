@@ -161,12 +161,12 @@ body{
                 </td>
 
                 <td>
-                    <a href="{{ route('projects.task.edit', $task->id) }}" class="action-btn edit-btn">
+                    <a href="{{ route('projects.tasks.edit', [$project_id, $task->id]) }}" class="action-btn edit-btn">
                         Edit
                     </a>
 
                     @unless(auth()->user()->hasRole('user'))
-                    <form action="{{ route('projects.task.delete', $task->id) }}" method="POST" style="display:inline;">
+                    <form action="{{ route('projects.tasks.destroy', [$project_id, $task->id]) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit"

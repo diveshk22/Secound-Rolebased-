@@ -20,7 +20,7 @@ class Task extends Model
 
     // Task statuses
     public const STATUSES  = [
-        'pending',
+        'Pending','In progress','Completed'
     ];
 
     // Task belongs to a user (creator) - Admin/SuperAdmin only

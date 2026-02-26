@@ -13,16 +13,15 @@ class TaskController extends Controller
     // Show tasks of specific project
     public function index($project_id)
     {
-        $query = Task::where('project_id', $project_id);
         $tasks = Task::where('project_id', $project_id)
         ->with(['user', 'assignedUser'])
         ->latest();
 
         if(auth()->user()->hasRole('user')) {
-        $query->where('assigned_to', auth()->id());
+        $tasks->where('assigned_to', auth()->id());
     }
 
-    $tasks = $query->get();
+        $tasks = $tasks->get();
 
     return view('admin.Projects.Task.TaskIndex', compact('tasks', 'project_id'));
     }
@@ -55,7 +54,7 @@ class TaskController extends Controller
             'assigned_to' => $request->assigned_to,
             'user_id' => auth()->id(),
             'project_id' => $request->project_id,
-            'status' => 'pending',
+            'status' => 'Pending',
         ]);
 
         return back()->with('success', 'Task created successfully!');
@@ -70,43 +69,61 @@ class TaskController extends Controller
     }
 
     // Show edit task form
-    public function edit($id)
+    public function edit($project_id_or_task_id, $id = null)
     {
-        $task = Task::with(['project'])->findOrFail($id);
+        // If called with 2 params (nested route), use $id. Otherwise use first param.
+        $task_id = $id ?? $project_id_or_task_id;
+        $task = Task::with(['project'])->findOrFail($task_id);
         $users = $task->project->users;
         
         return view('admin.Projects.Task.edit-task', compact('task', 'users'));
     }
 
     // Edit task update
-    public function update(Request $request, $id)
+    public function update(Request $request, $project_id_or_task_id, $id = null)
    {
-    $task = Task::findOrFail($id);
+    
+//    dd($request->all());
+    
+    // If called with 2 params (nested route), use $id. Otherwise use first param.
+    $task_id = $id ?? $project_id_or_task_id;
+    $task = Task::findOrFail($task_id);
+// dd($task->fresh());
 
+// $validated = $request->validate($rules);
+
+    // dd($validated);
     $request->validate([
         'title'       => 'required|string|max:255',
         'description' => 'nullable|string',
         'due_date'    => 'nullable|date',
-        'assigned_to' => 'required|exists:users,id',
-        'status'      => 'required|in:pending,inprogress,completed',
+        'assigned_to' => 'nullable|exists:users,id',
+        'status'      => 'required|in:Pending,In Progress,Completed',
     ]);
 
-    $task->update([
+    $updateData = [
         'title'       => $request->title,
         'description' => $request->description,
         'due_date'    => $request->due_date,
-        'assigned_to' => $request->assigned_to,
         'status'      => $request->status,
-    ]);
+    ];
+
+    if ($request->filled('assigned_to')) {
+        $updateData['assigned_to'] = $request->assigned_to;
+    }
+
+    $task->update($updateData);
 
     return back()->with('success', 'Task updated successfully.');
     }
 
 
     // Delete task
-    public function destroy($id)
+    public function destroy($project_id_or_task_id, $id = null)
     {
-        Task::findOrFail($id)->delete();
+        // If called with 2 params (nested route), use $id. Otherwise use first param.
+        $task_id = $id ?? $project_id_or_task_id;
+        Task::findOrFail($task_id)->delete();
 
         return back()->with('success', 'Task Deleted Successfully');
     }

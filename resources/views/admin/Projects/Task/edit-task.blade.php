@@ -106,7 +106,7 @@
 <div class="view-card">
     <h2>Edit Task</h2>
 
-    <form action="{{ route('projects.task.update', $task->id) }}" method="POST">
+    <form action="{{ auth()->user()->hasRole('user') ? route('user.projects.task.update', $task->id) : route('projects.task.update', $task->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -119,6 +119,11 @@
         <label>Due Date</label>
         <input type="date" name="due_date" value="{{ $task->due_date }}">
 
+        @php
+        $user = auth()->user();
+        @endphp
+
+        @if($user->hasRole(['admin', 'super_admin', 'manager']))
         <label>Assign User</label>
         <select name="assigned_to">
             @foreach($users as $u)
@@ -127,12 +132,13 @@
                 </option>
             @endforeach
         </select>
+        @endif
 
         <label>Status</label>
         <select name="status">
-            <option value="pending" {{ $task->status=='pending'?'selected':'' }}>Pending</option>
-            <option value="inprogress" {{ $task->status=='inprogress'?'selected':'' }}>In Progress</option>
-            <option value="completed" {{ $task->status=='completed'?'selected':'' }}>Completed</option>
+            <option value="Pending" {{ $task->status=='Pending'?'selected':'' }}>Pending</option>
+            <option value="In Progress" {{ $task->status=='In Progress'?'selected':'' }}>In Progress</option>
+            <option value="Completed" {{ $task->status=='Completed'?'selected':'' }}>Completed</option>
         </select>
 
         <button type="submit" class="btn-update">Update Task</button>
