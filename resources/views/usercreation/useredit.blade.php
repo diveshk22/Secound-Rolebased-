@@ -105,8 +105,11 @@
         <div class="mb-3">
         <label>Role</label>
         <select name="role" class="form-control">
+            @if(auth()->user()->hasRole('super_admin'))
+            <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+            @endif
         <option value="manager" {{ $user->role == 'manager' ? 'selected' : '' }}>Manager</option>
-        <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
+        <option value="employee" {{ $user->role == 'employee' ? 'selected' : '' }}>Employee</option>
         </select>
         </div>
         @endif
@@ -116,7 +119,7 @@
             </div>
 
             <button type="submit" class="btn btn-update">
-                Update User
+                Update Employee
             </button>
 
         </form>

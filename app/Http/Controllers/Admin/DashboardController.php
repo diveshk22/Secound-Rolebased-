@@ -13,12 +13,12 @@ class DashboardController extends Controller
     // Dashboard for user management
     public function dashboard()
     {
-    $totalUsers = User::count();
+         $totalUsers = User::count();
 
-    $todayUsers  = User::role('user')
+         $todayUsers  = User::role('user')
             ->whereDate('created_at', Carbon::today())
             ->count();
-    return view('admin.dashboard', compact('totalUsers','todayUsers'));
+        return view('admin.dashboard', compact('totalUsers','todayUsers'));
     }
 
     // Dashboard for task management

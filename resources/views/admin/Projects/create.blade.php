@@ -82,44 +82,42 @@ label {
 <div class="container">
     <div class="card">
         <h2>Create Project</h2>
-
         <form action="{{ route('projects.store') }}" 
         method="POST">
         @csrf
+        <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter project name" required>
+        </div>
 
-            <div class="form-group">
-                <label>Project Name</label>
-                <input type="text" name="name" class="form-control" placeholder="Enter project name" required>
-            </div>
+        <div class="form-group">
+            <label>Project Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Enter project description" required></textarea>
+        </div>
 
-            <div class="form-group">
-                <label>Project Description</label>
-                <textarea name="description" class="form-control" rows="4" placeholder="Enter project description" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Assign To</label>
-                <select name="users[]" class="form-control" multiple required>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
+        <div class="form-group">
+            <label>Assign To</label>
+            <select name="users[]" class="form-control" multiple required>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}">
+                        {{ $user->name }}
+                    </option>
+                @endforeach
+            </select>
                 <!-- <small class="hint">
                     Hold Ctrl (Windows) or Cmd (Mac) to select multiple users
                 </small> -->
-            </div>
+        </div>
 
-            <button type="submit" class="btn-submit">
-                Create Project
-            </button>
+        <button type="submit" class="btn-submit">
+            Create Project
+        </button>
 
         </form>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@if(session('success'))
+    @if(session('success'))
 <script>
     Swal.fire({
         icon: 'success',

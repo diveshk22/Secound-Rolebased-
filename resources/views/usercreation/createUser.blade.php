@@ -98,7 +98,7 @@
 
     <div class="glass-form w-full max-w-2xl p-12 rounded-3xl">
 
-        <h2 class="form-title">➕ Create New User</h2>
+        <h2 class="form-title">➕ Create New Employee</h2>
 
         <form action="{{ route('users.store') }}" method="POST" class="space-y-6">
             @csrf
@@ -124,22 +124,25 @@
             </div>
 
             @if(auth()->user()->hasRole('manager'))
-            <input type="hidden" name="role" value="user">
+            <input type="hidden" name="role" value="employee">
             @endif
 
             @if(auth()->user()->hasRole(['admin' , 'super_admin']))
-        <div>
-        <label class="form-label">Role</label>
-        <select name="role" class="form-input" required>
+            <div>
+            <label class="form-label">Role</label>
+            <select name="role" class="form-input" required>
+            @if(auth()->user()->hasRole('super_admin'))
+             <option value="admin">Admin</option>
+            @endif
             <option value="manager">Manager</option>
-            <option value="user">User</option>
-        </select>
-    </div>
-@endif
+            <option value="employee">Employee</option>
+            </select>
+            </div>
+            @endif
 
 
             <button type="submit" class="btn-premium w-full mt-4">
-                🚀 Create User
+                🚀 Create Employee
             </button>
 
         </form>

@@ -17,13 +17,13 @@ class TaskController extends Controller
         ->with(['user', 'assignedUser'])
         ->latest();
 
-        if(auth()->user()->hasRole('user')) {
+        if(auth()->user()->hasRole('employee')) {
         $tasks->where('assigned_to', auth()->id());
-    }
+        }
 
         $tasks = $tasks->get();
 
-    return view('admin.Projects.Task.TaskIndex', compact('tasks', 'project_id'));
+        return view('admin.Projects.Task.TaskIndex', compact('tasks', 'project_id'));
     }
     // Show create task form
     public function create($project_id)
@@ -81,40 +81,40 @@ class TaskController extends Controller
 
     // Edit task update
     public function update(Request $request, $project_id_or_task_id, $id = null)
-   {
+    {
     
-//    dd($request->all());
+        //dd($request->all());
     
-    // If called with 2 params (nested route), use $id. Otherwise use first param.
-    $task_id = $id ?? $project_id_or_task_id;
-    $task = Task::findOrFail($task_id);
-// dd($task->fresh());
+        //If called with 2 params (nested route), use $id. Otherwise use first param.
+        $task_id = $id ?? $project_id_or_task_id;
+        $task = Task::findOrFail($task_id);
+        //dd($task->fresh());
 
-// $validated = $request->validate($rules);
+        // $validated = $request->validate($rules);
 
-    // dd($validated);
-    $request->validate([
-        'title'       => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'due_date'    => 'nullable|date',
-        'assigned_to' => 'nullable|exists:users,id',
-        'status'      => 'required|in:Pending,In Progress,Completed',
-    ]);
+        // dd($validated);
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date'    => 'nullable|date',
+            'assigned_to' => 'nullable|exists:users,id',
+            'status'      => 'required|in:Pending,In Progress,Completed',
+        ]);
 
-    $updateData = [
-        'title'       => $request->title,
-        'description' => $request->description,
-        'due_date'    => $request->due_date,
-        'status'      => $request->status,
-    ];
+        $updateData = [
+            'title'       => $request->title,
+            'description' => $request->description,
+            'due_date'    => $request->due_date,
+            'status'      => $request->status,
+        ];
 
-    if ($request->filled('assigned_to')) {
+        if ($request->filled('assigned_to')) {
         $updateData['assigned_to'] = $request->assigned_to;
-    }
+        }
 
-    $task->update($updateData);
+        $task->update($updateData);
 
-    return back()->with('success', 'Task updated successfully.');
+        return back()->with('success', 'Task updated successfully.');
     }
 
 

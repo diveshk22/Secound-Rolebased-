@@ -4,33 +4,31 @@
 
 <div class="p-8 text-slate-200">
 
-{{-- Welcome --}}
-<div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg mb-8">
-<h1 class="text-3xl font-bold mb-2">
-Welcome, {{ auth()->user()->name }}
-</h1>
-<p class="text-slate-400">Here is your team overview</p>
+    {{-- Welcome --}}
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-lg mb-8">
+            <h1 class="text-3xl font-bold mb-2">
+                Welcome, {{ auth()->user()->name }}
+            </h1>
+            <p class="text-slate-400">Here is your team overview</p>
+        </div>
+
+            {{-- Stats --}}
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
+            {{-- Users --}}
+        <div class="stat-card">
+        <h3>Total Users</h3>
+        <p class="stat-number text-indigo-400">{{ $totalUsers }}</p>
+        </div>
+
 </div>
 
-{{-- Stats --}}
-<div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-8">
-
-{{-- Users --}}
-<div class="stat-card">
-<h3>Total Users</h3>
-<p class="stat-number text-indigo-400">{{ $totalUsers }}</p>
-</div>
-
-</div>
-
-{{-- Message --}}
-<div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg">
-<div class="p-6 text-center">
-<h2 class="text-xl font-semibold mb-4">Manager Dashboard</h2>
-<p class="text-slate-400">Task and project functionality has been removed for managers.</p>
-</div>
-</div>
-
+    {{-- Message --}}
+    <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-lg">
+        <div class="p-6 text-center">
+            <h2 class="text-xl font-semibold mb-4">Manager Dashboard</h2>
+                <p class="text-slate-400">Task and project functionality has been removed for managers.</p>
+        </div>
+    </div>
 </div>
 
 <style>

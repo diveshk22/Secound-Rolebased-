@@ -39,13 +39,7 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    // Task has many comments - Admin/SuperAdmin only
-    // public function comments()
-    // {
-    //     return $this->hasMany(Comment::class, 'task_id');
-    // }
-
+    
     public function project()
     {
         return $this->belongsTo(project::class, 'project_id');

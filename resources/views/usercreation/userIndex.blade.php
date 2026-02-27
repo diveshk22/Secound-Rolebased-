@@ -135,7 +135,7 @@ td{
                         @elseif($role == 'manager')
                             <span class="btn btn-manager">Manager</span>
                         @else
-                            <span class="btn btn-user">User</span>
+                            <span class="btn btn-user">Employee</span>
                         @endif
                     </td>
 

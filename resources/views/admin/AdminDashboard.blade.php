@@ -1,4 +1,5 @@
 @extends('layout.app')
+
 @section('content')
 
 <style>
@@ -15,28 +16,33 @@
         position: fixed;
         inset: 0;
         z-index: -1;
-        background: radial-gradient(circle at 20% 20%, #2563eb55, transparent 40%),
-                    radial-gradient(circle at 80% 30%, #7c3aed55, transparent 40%),
-                    radial-gradient(circle at 50% 80%, #0ea5e955, transparent 40%),
-                    #0f172a;
+        background:
+            radial-gradient(circle at 20% 20%, #2563eb55, transparent 40%),
+            radial-gradient(circle at 80% 30%, #7c3aed55, transparent 40%),
+            radial-gradient(circle at 50% 80%, #0ea5e955, transparent 40%),
+            #0f172a;
         animation: moveBg 18s ease-in-out infinite alternate;
     }
 
     @keyframes moveBg {
-        0% { background-position: 0% 0%, 100% 0%, 50% 100%; }
-        100% { background-position: 20% 30%, 80% 10%, 60% 80%; }
+        0% {
+            background-position: 0% 0%, 100% 0%, 50% 100%;
+        }
+        100% {
+            background-position: 20% 30%, 80% 10%, 60% 80%;
+        }
     }
 
     /* Welcome Card */
     .welcome-card {
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(18px);
-        border: 1px solid rgba(255,255,255,0.12);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
 
     .role-badge {
-        background: linear-gradient(45deg,#2563eb,#4f46e5);
+        background: linear-gradient(45deg, #2563eb, #4f46e5);
         color: #fff;
         font-weight: 600;
         letter-spacing: .5px;
@@ -74,18 +80,23 @@
 
     .dashboard-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
     }
 
     .stat-number {
         font-size: 64px;
         font-weight: 800;
         margin-top: 20px;
-        text-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        text-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     }
 
-    .card-blue { border-left: 6px solid #3b82f6; }
-    .card-green { border-left: 6px solid #22c55e; }
+    .card-blue {
+        border-left: 6px solid #3b82f6;
+    }
+
+    .card-green {
+        border-left: 6px solid #22c55e;
+    }
 
     .dashboard-title {
         font-size: 42px;
@@ -94,74 +105,76 @@
         letter-spacing: 1px;
         margin-bottom: 50px;
     }
-    </style>
+</style>
 
-    <div class="animated-bg"></div>
+<div class="animated-bg"></div>
 
-    <!-- Welcome Section -->
-    <div class="welcome-card p-2 rounded-2xl mb-10 flex justify-between items-center text-white">
+<!-- Welcome Section -->
+<div class="welcome-card p-6 rounded-2xl mb-10 flex justify-between items-center text-white">
     <div>
-    <h2 class="text-3xl font-bold">
-    Welcome, {{ auth()->user()->name }} 👋
-    </h2>
+        <h2 class="text-3xl font-bold">
+            Welcome, {{ auth()->user()->name }} 👋
+        </h2>
 
-    <p class="mt-3 text-lg">
-    Role:
-    <span class="px-4 py-1 rounded-full text-sm role-badge">
-    {{ auth()->user()->getRoleNames()->first() }}
-    </span>
-    </p>
+        <p class="mt-3 text-lg">
+            Role:
+            <span class="px-4 py-1 rounded-full text-sm role-badge">
+                {{ auth()->user()->getRoleNames()->first() }}
+            </span>
+        </p>
     </div>
-    </div>
+</div>
 
-    <!-- Dashboard Content -->
-    <div class="px-6 pb-2">
+<!-- Dashboard Content -->
+<div class="px-6 pb-10">
 
     <h1 class="dashboard-title">
-    🚀 Admin Dashboard Overview
+        🚀 Admin Dashboard Overview
     </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    {{-- Total Users --}}
-    <div class="dashboard-card card-blue">
-    <h2 class="text-l uppercase tracking-wider text-gray-100">
-    Total Users
-    </h2>
-    <p class="stat-number text-blue-400">
-    {{ $totalUsers }}
-    </p>
+        <!-- Total Users -->
+        <div class="dashboard-card card-blue">
+            <h2 class="text-sm uppercase tracking-wider text-gray-100">
+                Total Users
+            </h2>
+            <p class="stat-number text-blue-400">
+                {{ $totalUsers }}
+            </p>
+        </div>
+
+        <!-- Users Created Today -->
+        <div class="dashboard-card card-green">
+            <h2 class="text-sm uppercase tracking-wider text-gray-300">
+                Users Created Today
+            </h2>
+            <p class="stat-number text-green-400">
+                {{ $todayUsers }}
+            </p>
+        </div>
     </div>
 
-    {{-- Today Users --}}
-    <div class="dashboard-card card-green">
-    <h2 class="text-l uppercase tracking-wider text-gray-300">
-    Users Created Today
-    </h2>
-    <p class="stat-number text-green-400">
-    {{ $todayUsers }}
-    </p>
-    </div>
-    <div style="display:flex;gap:20px;margin:30px;">
+    <!-- Tasks Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
 
-    <div style="flex:1;background:#1e293b;padding:25px;border-radius:10px;color:white;text-align:center;">
-    <h3>Total Tasks</h3>
-    <h1>{{ $totalTasks }}</h1>
-    </div>
+        <div class="bg-slate-800 p-6 rounded-xl text-white text-center shadow-lg">
+            <h3 class="text-lg font-semibold">Total Tasks</h3>
+            <h1 class="text-4xl font-bold mt-2">{{ $totalTasks }}</h1>
+        </div>
 
-    <div style="flex:1;background:#0ea5e9;padding:25px;border-radius:10px;color:white;text-align:center;">
-    <h3>Today's Tasks</h3>
-    <h1>{{ $todayTasks }}</h1>
-    </div>
+        <div class="bg-sky-500 p-6 rounded-xl text-white text-center shadow-lg">
+            <h3 class="text-lg font-semibold">Today's Tasks</h3>
+            <h1 class="text-4xl font-bold mt-2">{{ $todayTasks }}</h1>
+        </div>
 
-    <div style="flex:1;background:#22c55e;padding:25px;border-radius:10px;color:white;text-align:center;">
-    <h3>Pending Tasks</h3>
-    <h1>{{ $pendingTasks }}</h1>
-    </div>
-    </div>
+        <div class="bg-green-500 p-6 rounded-xl text-white text-center shadow-lg">
+            <h3 class="text-lg font-semibold">Pending Tasks</h3>
+            <h1 class="text-4xl font-bold mt-2">{{ $pendingTasks }}</h1>
+        </div>
 
     </div>
 
-    </div>
+</div>
 
-    @endsection
+@endsection

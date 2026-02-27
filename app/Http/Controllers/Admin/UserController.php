@@ -18,22 +18,19 @@ class UserController extends Controller
 
         if ($authUser->hasRole('super_admin')) {
             // Super Admin sees all users
-            
             $users = User::with('creator')->where('id', '!=', $authUser->id)->get();
-        }
-        elseif ($authUser->hasRole('admin')) {
+        } elseif ($authUser->hasRole('admin')) {
             // Admin sees managers + users
             $users = User::with('creator')
                 ->whereHas('roles', function ($q) {
-                    $q->whereIn('name', ['manager', 'user']);
+                    $q->whereIn('name', ['manager', 'employee']);
                 })
                 ->get();
-        }
-        elseif ($authUser->hasRole('manager')) {
+        } elseif ($authUser->hasRole('manager')) {
             // Manager sees only users created by him
             $users = User::with('creator')
                 ->whereHas('roles', function ($q) {
-                    $q->where('name', 'user');
+                    $q->where('name', 'employee');
                 })
                 ->where('created_by', $authUser->id)
                 ->get();
@@ -48,58 +45,70 @@ class UserController extends Controller
     ============================*/
     public function create()
     {
-    $user = auth()->user();
+        $user = auth()->user();
 
-    if ($user->hasRole('super_admin')) {
-        // Super Admin can create all roles
-        $roles = ['admin', 'manager', 'user'];
-    }
-    elseif ($user->hasRole('admin')) {
-        // Admin can create manager + user
-        $roles = ['manager', 'user'];
-    }
-    else {
-        // Others can only create user
-        $roles = ['user'];
-    }
+        if ($user->hasRole('super_admin')) {
+            // Super Admin can create all roles
+            $roles = ['admin', 'manager', 'employee'];
+        } elseif ($user->hasRole('admin')) {
+            // Admin can create manager + employee
+            $roles = ['manager', 'employee'];
+        } else {
+            // Others can only create employee
+            $roles = ['employee'];
+        }
 
-    return view('usercreation.CreateUser', compact('roles'));
+        return view('usercreation.CreateUser', compact('roles'));
     }
 
     /* ===========================
        STORE USER
     ============================*/
-    public function store(Request $request)
-    {
-        $authUser = auth()->user();
-        $request->validate([
-            'name' => 'required',
-            'email'=> 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'role' => 'required',
-        ]);
+public function store(Request $request)
+{
 
-        // Role Restrictions
-        if ($authUser->hasRole('manager') && $request->role !== 'user') {
-            abort(403);
-        }
+    
+    $authUser = auth()->user();
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'created_by' => $authUser->id,
-        ]);
+    //  dd($authUser->getRoleNames()); 
+    $request->validate([
+        'name' => 'required',
+        'email'=> 'required|email|unique:users',
+        'password' => 'required|min:6|confirmed',
+        'role' => 'required',
+    ]);
 
-        $user->assignRole($request->role);
+    // ✅ Allowed Roles Based on Logged-in User
+    $allowedRoles = [];
 
-        // dd($user->getRoleNames());
-
-        $route = $authUser->hasRole('admin') ? 'admin.users.index' : 'manager.users.index';
-
-        return redirect()->back()->with('success', 'User created successfully');
+    if ($authUser->hasRole('super_admin')) {
+        $allowedRoles = ['admin', 'manager', 'employee'];
+    }
+    elseif ($authUser->hasRole('admin')) {
+        $allowedRoles = ['manager', 'employee'];
+    }
+    elseif ($authUser->hasRole('manager')) {
+        $allowedRoles = ['employee'];
     }
 
+    // ❗ Single Check Only
+    if (!in_array($request->role, $allowedRoles)) {
+        abort(403, 'Unauthorized Role');
+    }
+
+    // Create User
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'created_by' => $authUser->id,
+    ]);
+
+    // Assign Role
+    $user->assignRole($request->role);
+
+    return redirect()->back()->with('success', 'User created successfully');
+}
 
     /* ===========================
        EDIT USER
@@ -113,11 +122,10 @@ class UserController extends Controller
         if ($authUser->hasRole('manager') && $user->created_by != $authUser->id) {
             abort(403);
         }
-
         if ($authUser->hasRole('admin')) {
-            $roles = \Spatie\Permission\Models\Role::whereIn('name', ['manager', 'user'])->get();
+            $roles = \Spatie\Permission\Models\Role::whereIn('name', ['manager', 'employee'])->get();
         } else {
-            $roles = \Spatie\Permission\Models\Role::where('name', 'user')->get();
+            $roles = \Spatie\Permission\Models\Role::where('name', 'employee')->get();
         }
 
         return view('usercreation.useredit', compact('user', 'roles'));
@@ -141,11 +149,11 @@ class UserController extends Controller
             'name' => 'required',
             'email'=> 'required|email|unique:users,email,'.$user->id,
             'password' => 'nullable|min:6|confirmed',
-            'role' => 'nullable|in:manager,user',
+            'role' => 'nullable|in:admin,manager,employee',
         ]);
 
          // Role Restrictions
-         if ($authUser->hasRole('manager') && $request->role !== 'user') {
+         if ($authUser->hasRole('manager') && $request->role !== 'employee') {
             abort(403);
         }
 
@@ -154,8 +162,16 @@ class UserController extends Controller
        
 
         // Update role if changed
-        if ($authUser->hasRole('admin') && $request->filled('role')) {
-        $user->syncRoles([$request->role]);
+        // Role Update (Super Admin + Admin)
+        if ($request->filled('role')) {
+
+            if ($authUser->hasRole('super_admin') && in_array($request->role, ['admin', 'manager', 'employee'])) {
+                $user->syncRoles([$request->role]);
+            }
+
+            elseif ($authUser->hasRole('admin') && in_array($request->role, ['manager','employee'])) {
+                $user->syncRoles([$request->role]);
+            }
         }
 
         if ($request->filled('password')) {
@@ -164,7 +180,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return back()->with('updated', 'User updated successfully!');
+        return back()->with('updated', 'Employee updated successfully!');
     }
 
 
@@ -182,7 +198,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return back()->with('success', 'User deleted successfully');
+        return back()->with('success', 'Employee deleted successfully');
     }
 
 }

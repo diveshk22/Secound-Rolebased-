@@ -138,30 +138,29 @@ body {
 
 <div class="projects-container">
     <div class="projects-title">All Projects</div>
-
-    <div class="projects-card">
-        <table class="projects-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Project Name</th>
-                    <th>Description</th>
-                    <th>Assigned Users</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+        <div class="projects-card">
+            <table class="projects-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Assigned Users</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
             <tbody>
                 @forelse($projects as $key => $project)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td><strong>{{ $project->name }}</strong></td>
-                    <td>{{ $project->description }}</td>
-                    <td>
-                        @foreach($project->users as $user)
-                            <span class="badge-user">{{ $user->name }}</span>
-                        @endforeach
-                    </td>
-                    <td class="actions">
+                    <tr>
+                        <td>{{ $key + 1 }}</td>
+                        <td><strong>{{ $project->name }}</strong></td>
+                        <td>{{ $project->description }}</td>
+                        <td>
+                            @foreach($project->users as $user)
+                                <span class="badge-user">{{ $user->name }}</span>
+                            @endforeach
+                        </td>
+                        <td class="actions">
                         @php
                             $userRole = auth()->user()->getRoleNames()->first();
                         @endphp

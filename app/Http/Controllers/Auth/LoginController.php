@@ -31,30 +31,30 @@ class LoginController extends Controller
 
     private function redirectBasedOnRole($user)
     {
-    $user = $user->fresh(['roles']);
+        $user = $user->fresh(['roles']);
 
-    // dd($user->getRoleNames()->toArray());
+        // dd($user->getRoleNames()->toArray());
 
-    if($user->hasRole('super_admin')){
-        return redirect()->route('superadmin.dashboard');
-    }
+        if($user->hasRole('super_admin')){
+            return redirect()->route('superadmin.dashboard');
+        }
         
-    if($user->hasRole('admin')){
-        return redirect()->route('admin.dashboard');
-    }
+        if($user->hasRole('admin')){
+            return redirect()->route('admin.dashboard');
+        }
 
-    if($user->hasRole('manager')){
-        return redirect()->route('manager.dashboard');
-    }
+        if($user->hasRole('manager')){
+            return redirect()->route('manager.dashboard');
+        }
 
-    if($user->hasRole('user')){
-        return redirect()->route('user.dashboard');
-    }
+        if($user->hasRole('employee')){
+            return redirect()->route('employee.dashboard');
+        }
 
-    Auth::logout();
+        Auth::logout();
 
-    return redirect()->route('login')
-        ->with('error', 'No valid role assigned. Please contact administrator.');
+        return redirect()->route('login')
+            ->with('error', 'No valid role assigned. Please contact administrator.');
     }
 
     public function logout(Request $request)

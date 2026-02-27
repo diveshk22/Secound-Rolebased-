@@ -12,22 +12,22 @@ class ProjectController extends Controller
     // ek me kar dia isko har jgah user where has par use kar sako
     private function getProjectUsers()
     {
-            return User::whereHas('roles', function($query) {
-        $query->whereIn('name', ['manager', 'user']);
-    })->get(); 
+        return User::whereHas('roles', function($query) {
+        $query->whereIn('name', ['manager', 'employee']);
+        })->get(); 
     }
 
-   public function index()
+    public function index()
     {
-    $user = auth()->user();
+        $user = auth()->user();
 
-    if($user->hasRole('admin')) {
-        $projects = Project::with('users')->get();
-    } else {
-        $projects = $user->projects()->with('users')->get();
-    }
+        if($user->hasRole('admin')) {
+            $projects = Project::with('users')->get();
+        } else {
+            $projects = $user->projects()->with('users')->get();
+        }
 
-    return view('admin.projects.index', compact('projects'));
+        return view('admin.projects.index', compact('projects'));
     }
 
     public function create()

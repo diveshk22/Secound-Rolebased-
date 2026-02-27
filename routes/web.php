@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\Employee\DashboardController as EmployeeDashboardController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\Employee\ProfileController;
 use App\Http\Controllers\Managers\ManagerDashboardController;
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -25,11 +25,9 @@ Route::get('/', fn () => view('welcome'))->name('/');
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('auth')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-});
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +46,7 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin|super_admin|manager|user'])->group(function () {
+Route::middleware(['auth', 'role:admin|super_admin|manager|employee'])->group(function () {
 
     // Dashboard
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
@@ -146,16 +144,16 @@ Route::middleware(['auth', 'role:manager'])
 
 /*
 |--------------------------------------------------------------------------
-| USER ROUTES
+| EMPLOYEE ROUTES
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:user'])
-    ->prefix('user')
-    ->name('user.')
+Route::middleware(['auth', 'role:employee'])
+    ->prefix('employee')
+    ->name('employee.')
     ->group(function () {
 
-        Route::get('/dashboard', [UserDashboardController::class, 'index'])
+        Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
             ->name('dashboard');
 
         Route::get('/projects', [ProjectController::class, 'index'])
